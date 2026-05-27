@@ -1,0 +1,153 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "deepseek/deepseek-v4-flash",
+  "default_agent": "build",
+  "agent": {
+    "build": {
+      "model": "deepseek/deepseek-v4-pro",
+      "description": "Orquestrador. Analisa intenção, decompõe tarefas, delega para subagentes, valida resultados.",
+      "color": "#10b981",
+      "steps": 50,
+      "prompt": "Você é o orquestrador do LISTA (Laravel 13 + Filament v5). Ao receber um pedido: 1) Analise escopo e domínio 2) Decomponha em tarefas atômicas 3) Use @subagent para delegar 4) Após cada subagente, valide: se alterou PHP, rode `ddev bin pint --format agent`; se alterou lógica, rode `ddev artisan test --compact --filter=` 5) Reporte resultado ao usuário. Regra de ouro: Pro para lógica complexa (backend, filament, security), Flash para tarefas padrão (frontend, database, testing, devops, i18n)."
+    },
+    "general": {
+      "model": "deepseek/deepseek-v4-pro",
+      "mode": "subagent",
+      "description": "Pesquisa e análise multi-domínio. Use para tarefas que cruzam múltiplas áreas do projeto.",
+      "hidden": true
+    },
+    "explore": {
+      "model": "deepseek/deepseek-v4-flash",
+      "mode": "subagent",
+      "description": "Navegação e descoberta rápida no código-fonte. Use para encontrar arquivos, entender estrutura, mapear dependências.",
+      "hidden": true
+    },
+    "backend": {
+      "model": "deepseek/deepseek-v4-pro",
+      "mode": "subagent",
+      "description": "PHP/Laravel: Models, Controllers, Services, Traits, Providers, Config, Commands, Observers, Events, Middleware, Routes. Use para toda lógica de negócio PHP.",
+      "color": "#3b82f6",
+      "steps": 30,
+      "permission": { "edit": "allow", "bash": "ask" }
+    },
+    "filament": {
+      "model": "deepseek/deepseek-v4-pro",
+      "mode": "subagent",
+      "description": "Filament v5: Resources, Pages, Widgets, RelationManagers, Forms, Tables, Filters, Actions, Notifications, Imports/Exports, Moderation queue. Use para admin panel.",
+      "color": "#8b5cf6",
+      "steps": 30,
+      "permission": { "edit": "allow", "bash": "ask" }
+    },
+    "security": {
+      "model": "deepseek/deepseek-v4-pro",
+      "mode": "subagent",
+      "description": "Auditoria de segurança: CSP, XSS, SQL injection, role-based access, rate limiting, input sanitization, authentication. Acione para revisões de segurança.",
+      "color": "#ef4444",
+      "steps": 25,
+      "permission": { "edit": "allow", "bash": "ask" }
+    },
+    "frontend": {
+      "model": "deepseek/deepseek-v4-flash",
+      "mode": "subagent",
+      "description": "UI/UX: Blade views, Tailwind CSS v4, design tokens, Alpine.js, vis-network, Vite config. Use para camada de apresentação.",
+      "color": "#f59e0b",
+      "steps": 25,
+      "permission": { "edit": "allow", "bash": "ask" }
+    },
+    "database": {
+      "model": "deepseek/deepseek-v4-flash",
+      "mode": "subagent",
+      "description": "Database: Migrations, schema, indexes, seeders, factories, queries, N+1 optimization. Use para banco de dados.",
+      "color": "#06b6d4",
+      "steps": 20,
+      "permission": { "edit": "allow", "bash": "ask" }
+    },
+    "testing": {
+      "model": "deepseek/deepseek-v4-flash",
+      "mode": "subagent",
+      "description": "PHPUnit: Feature tests, Unit tests, Factories, Assertions, Route tests. Use para criar ou corrigir testes.",
+      "color": "#22c55e",
+      "steps": 20,
+      "permission": { "edit": "allow", "bash": "ask" }
+    },
+    "devops": {
+      "model": "deepseek/deepseek-v4-flash",
+      "mode": "subagent",
+      "description": "Infra/DevOps: DDEV, Docker, compose.yaml, Railway, FrankenPHP, deploy. Use para ambiente e deploy.",
+      "color": "#64748b",
+      "steps": 15,
+      "permission": { "edit": "allow", "bash": "ask" }
+    },
+    "i18n": {
+      "model": "deepseek/deepseek-v4-flash",
+      "mode": "subagent",
+      "description": "Traduções: lang/en, lang/pt_BR, locale config, formatação datetime. Use para adicionar/corrigir traduções.",
+      "color": "#ec4899",
+      "steps": 10,
+      "permission": { "edit": "allow", "bash": "ask" }
+    }
+  },
+  "command": {
+    "dev": {
+      "template": "ddev start && ddev npm run dev",
+      "description": "Sobe DDEV e watch assets Vite"
+    },
+    "test": {
+      "template": "ddev artisan test --compact --filter={{input}}",
+      "description": "Roda PHPUnit tests com filtro opcional"
+    },
+    "lint": {
+      "template": "ddev bin pint --format agent",
+      "description": "Corrige estilo PHP com Pint"
+    },
+    "migrate": {
+      "template": "ddev artisan migrate",
+      "description": "Roda migrations pendentes"
+    },
+    "fresh": {
+      "template": "ddev artisan migrate:fresh --seed",
+      "description": "Fresh migrate + seed"
+    },
+    "deploy": {
+      "template": "git add -A && git commit -m '{{input}}' && git push",
+      "description": "Commit + push para deploy Railway"
+    }
+  },
+  "skills": {
+    "paths": [".opencode/skills"]
+  },
+  "mcp": {
+    "laravel-boost": {
+      "type": "local",
+      "command": ["ddev", "artisan", "boost:mcp"],
+      "enabled": true
+    }
+  },
+  "compaction": {
+    "auto": true,
+    "tail_turns": 10,
+    "reserved": 4096
+  },
+  "permission": {
+    "bash": {
+      "ddev *": "allow",
+      "git *": "allow",
+      "npm *": "allow",
+      "composer *": "allow",
+      "ls *": "allow",
+      "mkdir *": "allow",
+      "cat *": "ask",
+      "rm *": "deny",
+      "*": "ask"
+    },
+    "edit": "allow",
+    "external_directory": {
+      "/home/thiago/Projetos/lista/**": "allow",
+      "*": "ask"
+    }
+  },
+  "tool_output": {
+    "max_lines": 500,
+    "max_bytes": 25600
+  }
+}
