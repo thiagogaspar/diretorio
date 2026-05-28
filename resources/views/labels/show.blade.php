@@ -9,6 +9,25 @@ if (!isset($seo)) {
         type: 'organization',
         image: $label->logo ? img_url($label->logo) : null,
         canonical: route('labels.show', $label),
+        schema: json_encode([
+            '@context'=>'https://schema.org',
+            '@graph'=>[
+                ['@type'=>'BreadcrumbList','itemListElement'=>[
+                    ['@type'=>'ListItem','position'=>1,'name'=>'Home','item'=>url('/')],
+                    ['@type'=>'ListItem','position'=>2,'name'=>'Labels','item'=>route('labels.index')],
+                    ['@type'=>'ListItem','position'=>3,'name'=>$label->name],
+                ]],
+                array_filter([
+                    '@type'=>'Organization',
+                    'name'=>$label->name,
+                    'url'=>route('labels.show',$label),
+                    'logo'=>$label->logo ? img_url($label->logo) : null,
+                    'description'=>$label->description ? Str::limit(strip_tags($label->description), 200) : null,
+                    'foundingDate'=>$label->founded_year ? (string)$label->founded_year : null,
+                    'location'=>$label->country ?: null,
+                ]),
+            ],
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
     );
 }
 @endphp
@@ -21,14 +40,14 @@ if (!isset($seo)) {
 @section('content')
 <div class="max-w-6xl mx-auto px-4">
 <!-- Hero — sem shapes geométricos -->
-<section class="relative -mx-4 mb-8 overflow-hidden bg-black" style="min-height:240px">
+<section class="relative -mx-4 mb-8 overflow-hidden bg-black" style="aspect-ratio:16/4; max-height:45vh;">
     @if($label->logo)
-    <img src="{{ img_url($label->logo) }}" alt="{{ $label->name }} logo" class="absolute inset-0 w-full h-full object-cover opacity-25" fetchpriority="high">
+    <img src="{{ img_url($label->logo) }}" alt="{{ $label->name }} logo" width="1920" height="480" class="absolute inset-0 w-full h-full object-cover opacity-25" fetchpriority="high">
     @endif
     <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20 flex items-center">
         <div class="relative z-10 max-w-6xl mx-auto px-4 w-full flex items-center gap-6">
             @if($label->logo)
-            <img src="{{ img_url($label->logo) }}" alt="{{ $label->name }}" class="w-20 h-20 object-contain shrink-0 border-2 border-white/20">
+            <img src="{{ img_url($label->logo) }}" alt="{{ $label->name }}" width="80" height="80" class="w-20 h-20 object-contain shrink-0 border-2 border-white/20">
             @endif
             <div>
                 <p class="font-display text-xs font-bold tracking-[0.15em] uppercase text-white/40 mb-2">{{ __('common.labels.record_label') }}</p>
@@ -39,7 +58,7 @@ if (!isset($seo)) {
 </section>
 
 <nav class="breadcrumb mb-8">
-    <a href="{{ route('home') }}">{{ __('common.home') }}</a><span>/</span>
+    <a href="{{ route('home') }}">{{ __('common.home_breadcrumb') }}</a><span>/</span>
     <a href="{{ route('labels.index') }}">{{ __('common.labels.title') }}</a><span>/</span>
     <span>{{ $label->name }}</span>
 </nav>
@@ -57,7 +76,7 @@ if (!isset($seo)) {
             <a href="{{ route('bands.show', $band) }}" class="group">
                 <div class="card p-3 flex gap-2.5 card-hover h-full">
                     @if($band->photo)
-                    <img src="{{ img_url($band->photo) }}" alt="{{ $band->name }}" class="w-12 h-12 object-cover shrink-0 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
+                    <img src="{{ img_url($band->photo) }}" alt="{{ $band->name }}" width="48" height="48" class="w-12 h-12 object-cover shrink-0 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
                     @endif
                     <div class="min-w-0 flex-1">
                         <h3 class="font-display font-bold text-sm text-brand-600 dark:text-brand-400 group-hover:text-brand-700 dark:group-hover:text-brand-300 truncate">{{ $band->name }}</h3>
@@ -80,7 +99,7 @@ if (!isset($seo)) {
     </div>
 
     <!-- Infobox -->
-    <aside class="lg:w-72 mt-8 lg:mt-0 shrink-0 self-start order-1 lg:order-2 lg:sticky lg:top-16">
+    <aside class="lg:w-72 mt-8 lg:mt-0 shrink-0 self-start order-1 lg:order-2 lg:sticky lg:top-16" role="complementary">
         <x-infobox :title="$label->name" :items="[
             __('common.labels.country') => $label->country ? e($label->country) : null,
             __('common.labels.founded') => $label->founded_year ? (string) $label->founded_year : null,

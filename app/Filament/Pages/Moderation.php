@@ -10,6 +10,7 @@ use Filament\Pages\Page;
 class Moderation extends Page
 {
     protected string $view = 'filament.pages.moderation';
+
     protected static string|\UnitEnum|null $navigationGroup = 'System';
 
     public static function getNavigationIcon(): string

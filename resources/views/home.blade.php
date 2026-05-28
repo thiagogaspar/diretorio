@@ -3,10 +3,16 @@
 @section('head')
 @php
 $seo = new \App\Values\SeoData(
-    title: 'LISTA — Band Genealogy',
+    title: 'DIRETÓRIO — Band Genealogy',
     description: 'Explore connections between bands and artists. A community-built directory of local original music.',
     canonical: url('/'),
-    schema: json_encode(['@context'=>'https://schema.org','@type'=>'WebSite','name'=>'LISTA','url'=>url('/')], JSON_UNESCAPED_SLASHES),
+    schema: json_encode([
+        '@context'=>'https://schema.org',
+        '@graph'=>[
+            ['@type'=>'WebSite','name'=>'DIRETÓRIO','url'=>url('/'),'potentialAction'=>['@type'=>'SearchAction','target'=>url('/bands?search={search_term_string}'),'query-input'=>'required name=search_term_string']],
+            ['@type'=>'Organization','name'=>'DIRETÓRIO','url'=>url('/'),'logo'=>url('/favicon.svg')],
+        ],
+    ], JSON_UNESCAPED_SLASHES),
 );
 @endphp
 <x-seo-meta :seo="$seo" />
@@ -39,7 +45,7 @@ $seo = new \App\Values\SeoData(
                 <div class="border border-white/10 bg-white/5 p-4 group hover:bg-white/[7%] transition-colors">
                     <p class="font-display text-[10px] font-bold tracking-[0.15em] uppercase text-white/30 mb-3">{{ __('common.home.featured_band') }}</p>
                     @if($heroBand->photo)
-                    <img src="{{ img_url($heroBand->photo) }}" alt="{{ $heroBand->name }}" class="w-full aspect-[3/2] object-cover border border-white/10" loading="lazy">
+                    <img src="{{ img_url($heroBand->photo) }}" alt="{{ $heroBand->name }}" width="600" height="400" class="w-full aspect-[3/2] object-cover border border-white/10" fetchpriority="high" decoding="sync">
                     @else
                     <div class="w-full aspect-[3/2] bg-white/5 border border-white/10 flex items-center justify-center text-white/20 font-display text-4xl font-black">{{ $heroBand->name[0] }}</div>
                     @endif
@@ -92,15 +98,17 @@ $seo = new \App\Values\SeoData(
 <div class="max-w-6xl mx-auto px-4">
 <!-- Featured Bands — newspaper grid 3-col -->
 <section class="mb-12">
-    <div class="flex items-center justify-between mb-5">
-        <h2 class="section-header flex-1">{{ __('common.home.featured_bands') }}</h2>
-        <a href="{{ route('bands.index') }}" class="font-display text-xs font-bold text-surface-400 hover:text-brand-600 dark:hover:text-brand-400 shrink-0 ml-4">{{ __('common.view_all') }} &rarr;</a>
-    </div>
+    <x-section-header tag="h2">
+        {{ __('common.home.featured_bands') }}
+        <x-slot:action>
+            <a href="{{ route('bands.index') }}" class="font-display text-xs font-bold text-surface-400 hover:text-brand-600 dark:hover:text-brand-400 shrink-0 ml-4">{{ __('common.view_all') }} &rarr;</a>
+        </x-slot:action>
+    </x-section-header>
     <div class="newspaper-grid gap-px bg-surface-200 dark:bg-ink-700 border-2 border-surface-200 dark:border-ink-700">
         @forelse($featuredBands as $band)
             <a href="{{ route('bands.show', $band) }}" class="bg-white dark:bg-ink-800 p-4 hover:bg-surface-50 dark:hover:bg-ink-700 group flex flex-col gap-2">
                 @if($band->photo)
-                <img src="{{ img_url($band->photo) }}" alt="{{ $band->name }}" class="w-full aspect-[3/2] object-cover border-2 border-surface-200 dark:border-ink-600" loading="lazy">
+                <img src="{{ img_url($band->photo) }}" alt="{{ $band->name }}" width="600" height="400" class="w-full aspect-[3/2] object-cover border-2 border-surface-200 dark:border-ink-600" loading="lazy">
                 @endif
                 <h3 class="font-display font-bold text-sm text-surface-900 dark:text-ink-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 leading-tight">{{ $band->name }}</h3>
                 <div class="text-[11px] text-surface-500 dark:text-ink-500 leading-relaxed">
@@ -117,15 +125,17 @@ $seo = new \App\Values\SeoData(
 
 <!-- Featured Artists — newspaper grid -->
 <section class="mb-12">
-    <div class="flex items-center justify-between mb-5">
-        <h2 class="section-header flex-1">{{ __('common.home.featured_artists') }}</h2>
-        <a href="{{ route('artists.index') }}" class="font-display text-xs font-bold text-surface-400 hover:text-brand-600 dark:hover:text-brand-400 shrink-0 ml-4">{{ __('common.view_all') }} &rarr;</a>
-    </div>
+    <x-section-header tag="h2">
+        {{ __('common.home.featured_artists') }}
+        <x-slot:action>
+            <a href="{{ route('artists.index') }}" class="font-display text-xs font-bold text-surface-400 hover:text-brand-600 dark:hover:text-brand-400 shrink-0 ml-4">{{ __('common.view_all') }} &rarr;</a>
+        </x-slot:action>
+    </x-section-header>
     <div class="newspaper-grid gap-px bg-surface-200 dark:bg-ink-700 border-2 border-surface-200 dark:border-ink-700">
         @forelse($featuredArtists as $artist)
             <a href="{{ route('artists.show', $artist) }}" class="bg-white dark:bg-ink-800 p-4 hover:bg-surface-50 dark:hover:bg-ink-700 group flex flex-col gap-2">
                 @if($artist->photo)
-                <img src="{{ img_url($artist->photo) }}" alt="{{ $artist->name }}" class="w-full aspect-[2/3] object-cover border-2 border-surface-200 dark:border-ink-600" loading="lazy">
+                <img src="{{ img_url($artist->photo) }}" alt="{{ $artist->name }}" width="400" height="600" class="w-full aspect-[2/3] object-cover border-2 border-surface-200 dark:border-ink-600" loading="lazy">
                 @endif
                 <h3 class="font-display font-bold text-sm text-surface-900 dark:text-ink-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 leading-tight">{{ $artist->name }}</h3>
                 <div class="text-[11px] text-surface-500 dark:text-ink-500">
@@ -140,21 +150,23 @@ $seo = new \App\Values\SeoData(
 
 <!-- Featured Labels -->
 <section class="mb-12">
-    <div class="flex items-center justify-between mb-5">
-        <h2 class="section-header flex-1">{{ __('common.home.labels') }}</h2>
-        <a href="{{ route('labels.index') }}" class="font-display text-xs font-bold text-surface-400 hover:text-brand-600 dark:hover:text-brand-400 shrink-0 ml-4">{{ __('common.view_all') }} &rarr;</a>
-    </div>
+    <x-section-header tag="h2">
+        {{ __('common.home.labels') }}
+        <x-slot:action>
+            <a href="{{ route('labels.index') }}" class="font-display text-xs font-bold text-surface-400 hover:text-brand-600 dark:hover:text-brand-400 shrink-0 ml-4">{{ __('common.view_all') }} &rarr;</a>
+        </x-slot:action>
+    </x-section-header>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-surface-200 dark:bg-ink-700 border-2 border-surface-200 dark:border-ink-700">
         @forelse($featuredLabels as $label)
         <a href="{{ route('labels.show', $label) }}" class="bg-white dark:bg-ink-800 p-4 hover:bg-surface-50 dark:hover:bg-ink-700 group flex items-center gap-3">
             @if($label->logo)
-            <img src="{{ img_url($label->logo) }}" alt="{{ $label->name }} logo" class="w-10 h-10 object-contain shrink-0 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
+            <img src="{{ img_url($label->logo) }}" alt="{{ $label->name }} logo" width="40" height="40" class="w-10 h-10 object-contain shrink-0 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
             @else
             <div class="w-10 h-10 shrink-0 bg-surface-100 dark:bg-ink-900 flex items-center justify-center text-surface-400 dark:text-ink-500 font-display text-sm font-bold border-2 border-surface-200 dark:border-ink-600">{{ $label->name[0] }}</div>
             @endif
             <div class="min-w-0 flex-1">
                 <h3 class="font-display font-bold text-sm text-surface-900 dark:text-ink-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 truncate">{{ $label->name }}</h3>
-                <div class="text-[11px] text-surface-500 dark:text-ink-500">{{ $label->bands_count }} banda(s)@if($label->country) · {{ $label->country }}@endif</div>
+                <div class="text-[11px] text-surface-500 dark:text-ink-500">{{ trans_choice('common.labels.bands_count', $label->bands_count) }}@if($label->country) · {{ $label->country }}@endif</div>
             </div>
         </a>
         @empty
@@ -168,7 +180,7 @@ $seo = new \App\Values\SeoData(
     <div class="max-w-xl mx-auto text-center">
         <h2 class="font-display text-2xl font-black text-surface-900 dark:text-ink-200 mb-3">{{ __('common.home.cta_title') }}</h2>
         <p class="text-surface-500 dark:text-ink-400 text-sm mb-5 font-serif">{{ __('common.home.cta_desc') }}</p>
-        <a href="/admin" class="btn bg-black text-white border-black hover:bg-surface-800">{{ __('common.home.cta_button') }} &rarr;</a>
+        <a href="/admin" class="btn btn-brand">{{ __('common.home.cta_button') }} &rarr;</a>
         <p class="text-xs text-surface-400 dark:text-ink-500 mt-4">{{ __('common.contribute') }} <a href="{{ route('register') }}" class="link">{{ __('common.home.cta_register') }}</a></p>
     </div>
 </section>

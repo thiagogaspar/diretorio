@@ -22,7 +22,7 @@ class MetaTags extends Component
 
     public function fullTitle(): string
     {
-        $app = config('app.name', 'LISTA');
+        $app = config('app.name', 'DIRETÓRIO');
 
         return $this->title !== $app ? "{$this->title} — {$app}" : $app;
     }

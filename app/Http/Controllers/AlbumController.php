@@ -51,6 +51,26 @@ class AlbumController extends Controller
             type: 'music.album',
             image: $album->cover_art ? img_url($album->cover_art) : null,
             canonical: route('albums.show', $album),
+            schema: json_encode([
+                '@context' => 'https://schema.org',
+                '@graph' => [
+                    ['@type' => 'BreadcrumbList', 'itemListElement' => [
+                        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => url('/')],
+                        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Albums', 'item' => route('albums.index')],
+                        ['@type' => 'ListItem', 'position' => 3, 'name' => $album->title],
+                    ]],
+                    array_filter([
+                        '@type' => 'MusicAlbum',
+                        'name' => $album->title,
+                        'url' => route('albums.show', $album),
+                        'image' => $album->cover_art ? img_url($album->cover_art) : null,
+                        'datePublished' => $album->release_year ? (string) $album->release_year : null,
+                        'byArtist' => ['@type' => 'MusicGroup', 'name' => $album->band->name, 'url' => route('bands.show', $album->band)],
+                        'genre' => $album->band->genres->pluck('name')->implode(', ') ?: null,
+                        'track' => $album->tracklist ? collect($album->tracklist)->map(fn ($t, $i) => ['@type' => 'MusicRecording', 'position' => $i + 1, 'name' => is_array($t) ? ($t['title'] ?? $t[0] ?? '') : $t])->values()->toArray() : null,
+                    ]),
+                ],
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
         );
 
         return view('albums.show', compact('album', 'seo'));

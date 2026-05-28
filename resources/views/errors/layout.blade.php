@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title')</title>
+    @vite(['resources/css/app.css'])
     <style>
-        body { font-family: 'DM Sans', system-ui, sans-serif; }
-        .dark body, .dark { background: #0f0d0c; color: #e4e4e7; }
+        :focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
     </style>
 </head>
-<body class="bg-ink-50 dark:bg-ink text-surface-900 dark:text-ink-200 antialiased">
+<body class="min-h-screen font-sans antialiased bg-surface-50 dark:bg-black text-surface-900 dark:text-white">
     <div class="min-h-screen flex items-center justify-center px-4">
         <div class="text-center max-w-md">
             <h1 class="font-display text-6xl font-bold text-brand-500 mb-4">@yield('code')</h1>

@@ -14,6 +14,12 @@ use App\Http\Controllers\LabelController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SitemapController;
+use App\Models\Album;
+use App\Models\Artist;
+use App\Models\Band;
+use App\Models\Genre;
+use App\Models\Label;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -84,8 +90,8 @@ Route::get('/sitemap.xml', SitemapController::class)->name('sitemap')
     ->middleware('throttle:10,1');
 
 Route::get('/setup', function () {
-    \Illuminate\Support\Facades\Artisan::call('app:create-admin-user');
-    \Illuminate\Support\Facades\Artisan::call('db:seed', [
+    Artisan::call('app:create-admin-user');
+    Artisan::call('db:seed', [
         '--class' => 'ProductionMockDataSeeder',
         '--force' => true,
     ]);
@@ -94,11 +100,11 @@ Route::get('/setup', function () {
         'admin_user' => 'admin@lista.site / 1234 (role: admin)',
         'seeded' => true,
         'counts' => [
-            'bands' => \App\Models\Band::count(),
-            'artists' => \App\Models\Artist::count(),
-            'labels' => \App\Models\Label::count(),
-            'albums' => \App\Models\Album::count(),
-            'genres' => \App\Models\Genre::count(),
+            'bands' => Band::count(),
+            'artists' => Artist::count(),
+            'labels' => Label::count(),
+            'albums' => Album::count(),
+            'genres' => Genre::count(),
         ],
     ]);
 })->middleware('throttle:3,60');

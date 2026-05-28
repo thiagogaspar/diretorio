@@ -28,13 +28,13 @@
 @foreach($alphabet as $letter)
 @if(isset($labels[$letter]))
 <section class="mb-10" id="letter-{{ $letter }}">
-    <h2 class="section-header">{{ $letter }}</h2>
+    <x-section-header tag="h2">{{ $letter }}</x-section-header>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         @foreach($labels[$letter] as $label)
         <a href="{{ route('labels.show', $label) }}" class="group">
             <div class="card p-4 flex items-center gap-4 card-hover">
                 @if($label->logo)
-                <img src="{{ img_url($label->logo) }}" alt="{{ $label->name }} logo" class="w-14 h-14 object-contain shrink-0 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
+                <img src="{{ img_url($label->logo) }}" alt="{{ $label->name }} logo" width="56" height="56" class="w-14 h-14 object-contain shrink-0 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
                 @else
                 <div class="w-14 h-14 shrink-0 bg-surface-100 dark:bg-ink-900 flex items-center justify-center text-surface-400 dark:text-ink-500 font-display text-base font-bold border-2 border-surface-200 dark:border-ink-600">
                     {{ $label->name[0] }}

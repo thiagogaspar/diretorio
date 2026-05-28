@@ -10,12 +10,13 @@ $seo = new \App\Values\SeoData(
 @endphp
 <x-seo-meta :seo="$seo" />
 <style>
-    body { background-color: #1a1d23 !important; }
-    .dark body { background-color: #1a1d23 !important; }
+    body { background-color: var(--color-ink-900) !important; }
+    .dark body { background-color: var(--color-ink-900) !important; }
 </style>
 @endsection
 
 @section('content')
+<h1 class="sr-only">{{ __('common.genealogy.title') }}</h1>
 <div id="full-genealogy-graph" class="graph-container" style="position:fixed;inset:0;top:0;height:100vh;z-index:0">
     <div class="flex items-center justify-center h-full text-surface-400">
         <svg class="w-10 h-10 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>

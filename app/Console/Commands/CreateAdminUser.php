@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -12,12 +13,12 @@ class CreateAdminUser extends Command
 {
     public function handle()
     {
-        \App\Models\User::updateOrCreate(
+        User::updateOrCreate(
             ['email' => 'admin@lista.site'],
             [
                 'name' => 'Admin',
                 'password' => '1234',
-                'role' => \App\Models\User::ROLE_ADMIN,
+                'role' => User::ROLE_ADMIN,
             ]
         );
 

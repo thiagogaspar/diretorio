@@ -13,16 +13,32 @@ $seo = new \App\Values\SeoData(
     type: 'profile',
     image: $artistPhotoUrl,
     canonical: route('artists.show', $artist),
-    schema: json_encode(['@context'=>'https://schema.org','@type'=>'Person','name'=>$artist->name,'url'=>route('artists.show',$artist)], JSON_UNESCAPED_SLASHES),
+    schema: json_encode([
+        '@context'=>'https://schema.org',
+        '@graph'=>[
+            ['@type'=>'BreadcrumbList','itemListElement'=>[
+                ['@type'=>'ListItem','position'=>1,'name'=>'Home','item'=>url('/')],
+                ['@type'=>'ListItem','position'=>2,'name'=>'Artists','item'=>route('artists.index')],
+                ['@type'=>'ListItem','position'=>3,'name'=>$artist->name],
+            ]],
+            array_filter([
+                '@type'=>'Person',
+                'name'=>$artist->name,
+                'url'=>route('artists.show',$artist),
+                'image'=>$artistPhotoUrl,
+                'birthDate'=>$artist->birth_date?->format('Y-m-d'),
+                'deathDate'=>$artist->death_date?->format('Y-m-d'),
+                'birthPlace'=>$artist->origin ?: null,
+                'memberOf'=>$artist->bands->map(fn($b)=>['@type'=>'MusicGroup','name'=>$b->name,'url'=>route('bands.show',$b)])->values()->toArray() ?: null,
+                'description'=>$artist->bio ? Str::limit(strip_tags($artist->bio), 200) : null,
+            ]),
+        ],
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
 );
 @endphp
 <x-seo-meta :seo="$seo" />
 @if($heroPlaceholder)
 <link rel="preload" href="{{ $heroPlaceholder }}" as="image" fetchpriority="high">
-@endif
-<meta name="twitter:card" content="summary">
-@if($artistPhotoUrl)
-<meta name="twitter:image" content="{{ $artistPhotoUrl }}">
 @endif
 @endsection
 
@@ -31,7 +47,7 @@ $seo = new \App\Values\SeoData(
 <!-- Hero — foto sem shapes -->
 <section class="relative -mx-4 -mt-6 mb-8 overflow-hidden bg-black" style="aspect-ratio:16/4; max-height:45vh;">
     @if($heroPlaceholder)
-    <img src="{{ $heroPlaceholder }}" alt="{{ $artist->name }}" class="absolute inset-0 w-full h-full object-cover opacity-30" fetchpriority="high" decoding="async" sizes="100vw">
+    <img src="{{ $heroPlaceholder }}" alt="{{ $artist->name }}" width="1920" height="480" class="absolute inset-0 w-full h-full object-cover opacity-30" fetchpriority="high" decoding="sync" sizes="100vw">
     @endif
     <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20"></div>
     <div class="relative z-10 flex flex-col justify-end h-full">
@@ -42,7 +58,7 @@ $seo = new \App\Values\SeoData(
 </section>
 
 <nav class="breadcrumb mb-6">
-    <a href="{{ route('home') }}">{{ __('common.home') }}</a><span>/</span>
+    <a href="{{ route('home') }}">{{ __('common.home_breadcrumb') }}</a><span>/</span>
     <a href="{{ route('artists.index') }}">{{ __('common.nav.artists') }}</a><span>/</span>
     <span>{{ $artist->name }}</span>
 </nav>
@@ -53,7 +69,7 @@ $seo = new \App\Values\SeoData(
         <div class="flex items-center gap-3 mb-6 pb-4 border-b-2 border-surface-200 dark:border-ink-700">
             @if($artistPhotoUrl)
             <button @click="$dispatch('open-lightbox', { url: '{{ $artistPhotoUrl }}', alt: '{{ $artist->name }}' })" class="shrink-0 cursor-pointer">
-            <img src="{{ $artistPhotoUrl }}" alt="{{ $artist->name }}" class="w-14 h-20 object-cover shrink-0 border-2 border-surface-200 dark:border-ink-600 hover:border-brand-500 dark:hover:border-brand-400 transition-colors" loading="lazy">
+            <img src="{{ $artistPhotoUrl }}" alt="{{ $artist->name }}" width="56" height="80" class="w-14 h-20 object-cover shrink-0 border-2 border-surface-200 dark:border-ink-600 hover:border-brand-500 dark:hover:border-brand-400 transition-colors" loading="lazy">
             </button>
             @endif
             <div class="min-w-0 flex-1">
@@ -81,7 +97,7 @@ $seo = new \App\Values\SeoData(
 
         <!-- Bio -->
         @if($artist->bio)
-        <div class="prose max-w-none mb-8">{!! \Stevebauman\Purify\Facades\Purify::clean(Str::markdown($artist->bio)) !!}</div>
+        <div class="prose max-w-none mb-8">{!! \Stevebauman\Purify\Facades\Purify::clean($artist->bio) !!}</div>
         @endif
 
         <!-- Band History — timeline quadrada -->
@@ -114,7 +130,7 @@ $seo = new \App\Values\SeoData(
     </div>
 
     <!-- Infobox -->
-    <aside class="lg:w-72 mt-8 lg:mt-0 shrink-0 self-start order-1 lg:order-2 lg:sticky lg:top-16">
+    <aside class="lg:w-72 mt-8 lg:mt-0 shrink-0 self-start order-1 lg:order-2 lg:sticky lg:top-16" role="complementary">
         <x-infobox :title="$artist->name" :items="[
             __('common.artists.birth') => $artist->birth_date ? $artist->birth_date->format('Y') . ($artist->death_date ? '&ndash;' . $artist->death_date->format('Y') : '') : null,
             __('common.artists.origin') => $artist->origin ? e($artist->origin) : null,

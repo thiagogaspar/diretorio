@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
     <link rel="preload" href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900&display=swap" as="style">
     <link rel="preload" href="https://fonts.bunny.net/css?family=jetbrains-mono:400,500,600,700&display=swap" as="style">
-    <link rel="preload" href="https://fonts.bunny.net/css?family=source-serif-4:ital,wght@0,400;0,600;0,700;1,400&display=swap" as="style">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900&display=swap" rel="stylesheet">
-    <link href="https://fonts.bunny.net/css?family=jetbrains-mono:400,500,600,700&display=swap" rel="stylesheet">
-    <link href="https://fonts.bunny.net/css?family=source-serif-4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.bunny.net/css?family=dm-serif-display:400|inter:400,500,600,700,800,900|jetbrains-mono:400,500,600,700|source-serif-4:ital,wght@0,400;0,600;0,700;1,400&display=swap" as="style">
+    <link href="https://fonts.bunny.net/css?family=dm-serif-display:400|inter:400,500,600,700,800,900|jetbrains-mono:400,500,600,700|source-serif-4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.bunny.net/css?family=space-grotesk:400,500,600,700|newsreader:ital,opsz,wght@0,14..72,400;0,14..72,500;0,14..72,600;1,14..72,400|geist-mono:400,500,600,700,800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <link href="https://fonts.bunny.net/css?family=lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600|atkinson-hyperlegible:400,700|ibm-plex-mono:400,500,600,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 
     @yield('preload')
 
@@ -26,6 +26,7 @@
         :focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
         .skip-link { position: absolute; top: -100%; left: 0; z-index: 10000; padding: 0.5rem 1rem; background: var(--color-brand-500); color: white; font-weight: 600; font-size: 0.875rem; }
         .skip-link:focus { top: 0; }
+        [x-cloak] { display: none !important; }
     </style>
 </head>
 <body class="min-h-screen font-sans antialiased bg-white dark:bg-black text-black dark:text-white">
@@ -34,7 +35,7 @@
     <header class="sticky top-0 z-50 border-b border-surface-200 dark:border-ink-700 bg-white dark:bg-ink-900" x-data="{ menu: false }" role="banner">
         <div class="max-w-6xl mx-auto px-4 h-12 flex items-center justify-between gap-4">
             <a href="{{ route('home') }}" class="text-sm font-bold text-brand-600 dark:text-brand-500 shrink-0 hover:text-brand-700 dark:hover:text-brand-400">
-                {{ config('app.name', 'LISTA') }}
+                {{ config('app.name', 'DIRETÓRIO') }}
             </a>
 
             <nav class="hidden md:flex items-center gap-0 text-sm" aria-label="Main navigation">
@@ -43,7 +44,7 @@
                 <a href="{{ route('genealogy') }}" class="px-3 py-1.5 font-medium text-surface-500 dark:text-ink-400 hover:text-brand-600 dark:hover:text-brand-400 {{ request()->routeIs('genealogy') ? 'text-brand-600 dark:text-brand-400' : '' }}">{{ __('common.nav.genealogy') }}</a>
                 <a href="{{ route('blog.index') }}" class="px-3 py-1.5 font-medium text-surface-500 dark:text-ink-400 hover:text-brand-600 dark:hover:text-brand-400 {{ request()->routeIs('blog.*') ? 'text-brand-600 dark:text-brand-400' : '' }}">{{ __('common.nav.blog') }}</a>
                 @auth
-                <a href="{{ route('favorites.index') }}" class="px-3 py-1.5 font-medium text-surface-500 dark:text-ink-400 hover:text-brand-600 dark:hover:text-brand-400">{{ __('common.nav.favorites') }}</a>
+                <a href="{{ route('favorites.index') }}" class="px-3 py-1.5 font-medium text-surface-500 dark:text-ink-400 hover:text-brand-600 dark:hover:text-brand-400 {{ request()->routeIs('favorites.*') ? 'text-brand-600 dark:text-brand-400' : '' }}">{{ __('common.nav.favorites') }}</a>
                 @endauth
             </nav>
 
@@ -82,13 +83,42 @@
                     </div>
                 </div>
 
+                @auth
+                @if(auth()->user()->isAdmin())
                 <a href="/admin" class="hidden sm:inline px-2 py-1 text-xs text-surface-400 hover:text-brand-600 dark:hover:text-brand-400" title="{{ __('common.admin') }}" rel="nofollow">{{ __('common.admin') }}</a>
+                @endif
+                @endauth
 
                 @auth
                 <span class="hidden sm:inline text-xs text-surface-400 mr-1">{{ auth()->user()->name }}</span>
                 @else
                 <a href="{{ route('register') }}" class="hidden sm:inline px-2 py-1 text-xs text-surface-400 hover:text-brand-600 dark:hover:text-brand-400">{{ __('common.register') }}</a>
                 @endauth
+
+                <div x-data="themeSwitcher()" class="relative">
+                    <button @click="open = !open" @click.away="open = false"
+                        class="hidden sm:inline px-2 py-1 text-xs font-mono font-bold text-surface-400 hover:text-surface-700 dark:hover:text-ink-300 uppercase tracking-wider">
+                        <span x-text="{ brutalist: 'BRS', 'midnight-neon': 'NEO', 'vintage-zine': 'VIN' }[theme]">BRS</span>
+                    </button>
+                    <div x-show="open" x-cloak
+                        class="absolute top-full right-0 mt-0 w-44 bg-white dark:bg-ink-800 border border-surface-200 dark:border-ink-700 z-50 text-xs font-mono">
+                        <button @click="setTheme('brutalist')"
+                            class="w-full px-3 py-2 text-left hover:bg-surface-100 dark:hover:bg-ink-700"
+                            :class="theme === 'brutalist' ? 'text-brand-600 dark:text-brand-400 font-bold' : 'text-surface-600 dark:text-ink-300'">
+                            [B] Brutalist
+                        </button>
+                        <button @click="setTheme('midnight-neon')"
+                            class="w-full px-3 py-2 text-left hover:bg-surface-100 dark:hover:bg-ink-700"
+                            :class="theme === 'midnight-neon' ? 'text-brand-600 dark:text-brand-400 font-bold' : 'text-surface-600 dark:text-ink-300'">
+                            [N] Neon
+                        </button>
+                        <button @click="setTheme('vintage-zine')"
+                            class="w-full px-3 py-2 text-left hover:bg-surface-100 dark:hover:bg-ink-700"
+                            :class="theme === 'vintage-zine' ? 'text-brand-600 dark:text-brand-400 font-bold' : 'text-surface-600 dark:text-ink-300'">
+                            [V] Vintage
+                        </button>
+                    </div>
+                </div>
 
                 <button x-data="{ theme: localStorage.getItem('theme') || 'system' }"
                     @click="theme = theme === 'dark' ? 'light' : 'dark'; let isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches); document.documentElement.classList.toggle('dark', isDark); localStorage.setItem('theme', theme)"
@@ -97,7 +127,7 @@
                     <svg class="w-4 h-4 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                 </button>
 
-                <button @click="menu = !menu" class="md:hidden p-1.5 text-surface-400 hover:text-surface-700 dark:hover:text-ink-300" aria-label="Menu">
+                <button @click="menu = !menu" class="md:hidden p-1.5 text-surface-400 hover:text-surface-700 dark:hover:text-ink-300" aria-label="{{ __('common.nav.menu_toggle') }}" :aria-expanded="menu">
                     <svg class="w-5 h-5" :class="menu ? 'hidden' : 'block'" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     <svg class="w-5 h-5" :class="menu ? 'block' : 'hidden'" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
@@ -109,12 +139,12 @@
                 <div class="relative" x-data="searchBox()">
                     <form @submit.prevent class="relative">
                         <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        <input x-model="query" @input.debounce.300ms="search()" @focus="if(query.length>=2) open=true" @keydown.escape="open=false" placeholder="Search..." aria-label="Search" class="w-full pl-9 pr-3 py-2 text-sm input">
+                        <input x-model="query" @input.debounce.300ms="search()" @focus="if(query.length>=2) open=true" @keydown.escape="open=false" placeholder="{{ __('common.search') }}" aria-label="{{ __('common.search') }}" class="w-full pl-9 pr-3 py-2 text-sm input">
                     </form>
                     <div x-show="open && (results.bands.length || results.artists.length)" @click.away="open = false" x-cloak class="mt-0 bg-white dark:bg-ink-800 border border-surface-200 dark:border-ink-700">
                         <template x-if="results.bands.length">
                             <div>
-                                <div class="px-3 pt-2 pb-1 text-[9px] font-bold text-surface-400 tracking-wider uppercase">Bands</div>
+                                <div class="px-3 pt-2 pb-1 text-[9px] font-bold text-surface-400 tracking-wider uppercase">{{ __('common.nav.bands') }}</div>
                                 <template x-for="band in results.bands" :key="band.id">
                                     <button @click="select('band', band.slug)" class="w-full px-3 py-2 text-left hover:bg-brand-50 dark:hover:bg-brand-900/30 flex items-center justify-between">
                                         <span class="font-semibold text-sm text-brand-600 dark:text-brand-400" x-text="band.name"></span>
@@ -124,7 +154,7 @@
                         </template>
                         <template x-if="results.artists.length">
                             <div>
-                                <div class="px-3 pt-2 pb-1 text-[9px] font-bold text-surface-400 tracking-wider uppercase">Artists</div>
+                                <div class="px-3 pt-2 pb-1 text-[9px] font-bold text-surface-400 tracking-wider uppercase">{{ __('common.nav.artists') }}</div>
                                 <template x-for="artist in results.artists" :key="artist.id">
                                     <button @click="select('artist', artist.slug)" class="w-full px-3 py-2 text-left hover:bg-brand-50 dark:hover:bg-brand-900/30 flex items-center justify-between">
                                         <span class="font-semibold text-sm text-brand-600 dark:text-brand-400" x-text="artist.name"></span>
@@ -141,21 +171,25 @@
                 @auth
                 <a href="{{ route('favorites.index') }}" class="block px-3 py-2 text-sm text-surface-700 dark:text-ink-200 hover:text-brand-600 font-medium">{{ __('common.nav.favorites') }}</a>
                 @endauth
+                @auth
+                @if(auth()->user()->isAdmin())
                 <a href="/admin" class="block px-3 py-2 text-xs text-surface-400">{{ __('common.admin') }}</a>
+                @endif
+                @endauth
             </div>
         </div>
     </header>
 
-    <main id="main-content" role="main" class="relative">
+    <main id="main-content" role="main" class="relative overflow-x-hidden">
         @yield('content')
     </main>
 
-    <footer class="border-t border-surface-200 dark:border-ink-700 mt-12 bg-white dark:bg-ink-900">
+    <footer class="border-t border-surface-200 dark:border-ink-700 mt-12 bg-white dark:bg-ink-900" role="contentinfo">
         <div class="max-w-6xl mx-auto px-4 py-10">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div class="col-span-2 md:col-span-1">
                     <div class="mb-3">
-                        <span class="text-base font-bold text-brand-600 dark:text-brand-500">{{ config('app.name', 'LISTA') }}</span>
+                        <span class="text-base font-bold text-brand-600 dark:text-brand-500">{{ config('app.name', 'DIRETÓRIO') }}</span>
                     </div>
                     <p class="text-sm text-surface-500 dark:text-ink-400 max-w-xs leading-relaxed">{{ __('common.footer.tagline') }}</p>
                     <div class="flex gap-3 mt-4">
@@ -164,7 +198,7 @@
                         <a href="{{ route('labels.index') }}" class="text-xs font-bold uppercase tracking-wider text-surface-400 hover:text-brand-600 dark:hover:text-brand-400">{{ __('common.nav.labels') }}</a>
                     </div>
                 </div>
-                <div>
+                <nav role="navigation" aria-label="{{ __('common.footer.explore') }}">
                     <p class="text-xs font-bold uppercase tracking-wider text-surface-600 dark:text-ink-400 mb-3">{{ __('common.footer.explore') }}</p>
                     <div class="space-y-2 text-sm">
                         <a href="{{ route('bands.index') }}" class="block text-surface-500 hover:text-surface-900 dark:hover:text-ink-100 hover:bg-surface-100 dark:hover:bg-ink-800 px-1 -mx-1 ">{{ __('common.nav.bands') }}</a>
@@ -173,8 +207,8 @@
                         <a href="{{ route('genealogy') }}" class="block text-surface-500 hover:text-surface-900 dark:hover:text-ink-100 hover:bg-surface-100 dark:hover:bg-ink-800 px-1 -mx-1 ">{{ __('common.nav.genealogy') }}</a>
                         <a href="{{ route('blog.index') }}" class="block text-surface-500 hover:text-surface-900 dark:hover:text-ink-100 hover:bg-surface-100 dark:hover:bg-ink-800 px-1 -mx-1 ">{{ __('common.nav.blog') }}</a>
                     </div>
-                </div>
-                <div>
+                </nav>
+                <nav role="navigation" aria-label="{{ __('common.footer.community') }}">
                     <p class="text-xs font-bold uppercase tracking-wider text-surface-600 dark:text-ink-400 mb-3">{{ __('common.footer.community') }}</p>
                     <div class="space-y-2 text-sm">
                         <a href="{{ route('register') }}" class="block text-surface-500 hover:text-surface-900 dark:hover:text-ink-100 hover:bg-surface-100 dark:hover:bg-ink-800 px-1 -mx-1 ">{{ __('common.join') }}</a>
@@ -182,8 +216,8 @@
                         <a href="{{ route('labels.index') }}" class="block text-surface-500 hover:text-surface-900 dark:hover:text-ink-100 hover:bg-surface-100 dark:hover:bg-ink-800 px-1 -mx-1 ">{{ __('common.footer.labels_az') }}</a>
                         <a href="/sitemap.xml" class="block text-surface-500 hover:text-surface-900 dark:hover:text-ink-100 hover:bg-surface-100 dark:hover:bg-ink-800 px-1 -mx-1 ">{{ __('common.nav.sitemap') }}</a>
                     </div>
-                </div>
-                <div>
+                </nav>
+                <nav role="navigation" aria-label="{{ __('common.bands.genres') }}">
                     <p class="text-xs font-bold uppercase tracking-wider text-surface-600 dark:text-ink-400 mb-3">{{ __('common.bands.genres') }}</p>
                     <div class="space-y-2 text-sm">
                         @php $footerGenres = app(\App\Services\BandService::class)->getGenres(); @endphp
@@ -191,10 +225,10 @@
                         <a href="{{ route('genres.show', $slug) }}" class="block text-surface-500 hover:text-surface-900 dark:hover:text-ink-100 hover:bg-surface-100 dark:hover:bg-ink-800 px-1 -mx-1 ">{{ $name }}</a>
                         @endforeach
                     </div>
-                </div>
+                </nav>
             </div>
             <div class="mt-10 pt-6 border-t border-surface-200 dark:border-ink-700 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-surface-400">
-                <span>&copy; {{ date('Y') }} {{ config('app.name', 'LISTA') }}. {{ __('common.footer.copyright') }}</span>
+                <span>&copy; {{ date('Y') }} {{ config('app.name', 'DIRETÓRIO') }}. {{ __('common.footer.copyright') }}</span>
                 <div class="flex gap-3">
                     <a href="/sitemap.xml" class="hover:text-surface-600 dark:hover:text-ink-300">{{ __('common.nav.sitemap') }}</a>
                     <a href="/admin" class="hover:text-surface-600 dark:hover:text-ink-300">Admin</a>
@@ -203,7 +237,7 @@
         </div>
     </footer>
 
+    <tallstackui:script />
     @livewireScripts
-    <style>[x-cloak] { display: none !important; }</style>
 </body>
 </html>

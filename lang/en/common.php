@@ -1,15 +1,19 @@
 <?php
 
 return [
-    'home' => 'Home',
+    'home_breadcrumb' => 'Home',
     'search' => 'Search',
     'filter' => 'Filter',
     'view_all' => 'View all',
     'skip_to_content' => 'Skip to content',
     'back_to_top' => 'Top',
     'back_to_home' => 'Back to Home',
+    'min_read' => 'min read',
+    'min_read_plural' => 'min read',
+    'share' => 'Share',
     'admin' => 'Admin',
     'register' => 'Register',
+    'or' => 'or',
     'join' => 'Join',
     'contribute' => 'Contribute',
 
@@ -23,6 +27,7 @@ return [
         'genealogy' => 'Genealogy',
         'blog' => 'Blog',
         'sitemap' => 'Sitemap',
+        'menu_toggle' => 'Toggle navigation menu',
     ],
 
     'home' => [
@@ -143,7 +148,7 @@ return [
         'bands' => 'Bands',
         'website' => 'Visit Website',
         'no_bands' => 'No bands on this label yet.',
-        'bands_count' => 'bands',
+        'bands_count' => '{1}:count band|[2,*]:count bands',
         'seo_description' => 'Browse record labels in the directory.',
         'aria_index' => 'Alphabetical index',
     ],
@@ -152,6 +157,7 @@ return [
         'title' => 'Blog',
         'read_more' => 'Read more',
         'no_posts' => 'No posts yet.',
+        'subtitle' => 'News, articles and stories from the local music scene.',
         'seo_description' => 'Latest news and articles about local music.',
         'back' => '&larr; Back to Blog',
     ],
@@ -160,6 +166,7 @@ return [
         'title' => 'Favorites',
         'no_favorites' => 'No favorites yet.',
         'browse_bands' => 'Browse Bands',
+        'login_prompt_rest' => 'to save favorites.',
         'login_prompt' => 'Register or log in to save favorites.',
         'seo_description' => 'Your favorited bands and artists.',
     ],
@@ -183,8 +190,8 @@ return [
         'status_pending' => 'Pending',
         'on' => 'on',
         'deleted' => '[deleted]',
-        'seo_description' => 'Your LISTA profile.',
-        'seo_public' => 'Profile of :name on LISTA.',
+        'seo_description' => 'Your DIRETÓRIO profile.',
+        'seo_public' => 'Profile of :name on DIRETÓRIO.',
         'logout' => 'Logout',
     ],
 
@@ -197,7 +204,7 @@ return [
         'register_button' => 'Register',
         'already_account' => 'Already have an account?',
         'login' => 'Log in',
-        'seo_title' => 'Register — LISTA',
+        'seo_title' => 'Register — DIRETÓRIO',
         'seo_description' => 'Create an account to save favorites, comment, and suggest edits.',
     ],
 

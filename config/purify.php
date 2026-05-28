@@ -1,7 +1,7 @@
 <?php
 
+use App\Purify\Definitions\AppDefinition;
 use Stevebauman\Purify\Cache\CacheDefinitionCache;
-use Stevebauman\Purify\Definitions\Html5Definition;
 
 return [
 
@@ -43,7 +43,7 @@ return [
         'default' => [
             'Core.Encoding' => 'utf-8',
             'HTML.Doctype' => 'HTML 4.01 Transitional',
-            'HTML.Allowed' => 'h1,h2,h3,h4,h5,h6,b,u,strong,i,em,s,del,a[href|title],ul,ol,li,p[style],br,span,img[width|height|alt|src],blockquote',
+            'HTML.Allowed' => 'h1,h2,h3,h4,h5,h6,b,u,strong,i,em,s,del,a[href|title],ul,ol,li,p[style],br,span[style],img[width|height|alt|src],blockquote[class|cite],cite,figure[class],figcaption,div[class|style],iframe[src|width|height|title|allowfullscreen|loading],table[class],thead,tbody,tr,th[class|colspan|rowspan],td[class|colspan|rowspan],hr,sup,sub',
             'HTML.ForbiddenElements' => '',
             'URI.AllowedSchemes' => ['http' => true, 'https' => true, 'mailto' => true],
             'CSS.AllowedProperties' => 'font,font-size,font-weight,font-style,font-family,text-decoration,padding-left,color,background-color,text-align',
@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'definitions' => Html5Definition::class,
+    'definitions' => AppDefinition::class,
 
     /*
     |--------------------------------------------------------------------------

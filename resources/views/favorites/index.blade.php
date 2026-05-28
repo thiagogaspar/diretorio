@@ -15,8 +15,8 @@
 @guest
 <div class="text-center py-16">
     <p class="text-surface-500 mb-4 text-sm">
-        <a href="{{ route('register') }}" class="link font-semibold">Register</a> or
-        <a href="{{ route('filament.admin.auth.login') }}" class="link font-semibold">log in</a> to save favorites.
+        <a href="{{ route('register') }}" class="link font-semibold">{{ __('common.register') }}</a> {{ __('common.or') }}
+        <a href="{{ route('filament.admin.auth.login') }}" class="link font-semibold">{{ __('common.auth.login') }}</a> {{ __('common.favorites.login_prompt_rest') }}
     </p>
 </div>
 @else
@@ -27,7 +27,7 @@
     <a href="{{ $fav->favoriteable_type === 'App\Models\Band' ? route('bands.show', $item) : route('artists.show', $item) }}" class="block group">
         <div class="card card-hover h-full bg-white dark:bg-ink-800 p-3 flex gap-2.5">
             @if(method_exists($item, 'getAttribute') && $item->photo)
-            <img src="{{ img_url($item->photo) }}" alt="{{ $item->name }}" class="w-12 h-12 object-cover shrink-0" loading="lazy" style="border:1px solid var(--color-surface-200)">
+            <img src="{{ img_url($item->photo) }}" alt="{{ $item->name }}" width="48" height="48" class="w-12 h-12 object-cover shrink-0 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
             @endif
             <div class="min-w-0 flex-1">
                 <h3 class="font-display font-bold text-xs text-brand-600 dark:text-brand-400 truncate">{{ $item->name }}</h3>
@@ -38,8 +38,8 @@
     @endif
     @empty
     <div class="col-span-full text-center py-16">
-        <p class="text-surface-500 mb-4 text-sm">No favorites yet.</p>
-        <a href="{{ route('bands.index') }}" class="btn btn-brand btn-sm">Browse Bands</a>
+        <p class="text-surface-500 mb-4 text-sm">{{ __('common.favorites.no_favorites') }}</p>
+        <a href="{{ route('bands.index') }}" class="btn btn-brand btn-sm">{{ __('common.favorites.browse_bands') }}</a>
     </div>
     @endforelse
 </div>

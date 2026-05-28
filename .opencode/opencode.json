@@ -8,7 +8,7 @@
       "description": "Orquestrador. Analisa intenção, decompõe tarefas, delega para subagentes, valida resultados.",
       "color": "#10b981",
       "steps": 50,
-      "prompt": "Você é o orquestrador do LISTA (Laravel 13 + Filament v5). Ao receber um pedido: 1) Analise escopo e domínio 2) Decomponha em tarefas atômicas 3) Use @subagent para delegar 4) Após cada subagente, valide: se alterou PHP, rode `ddev bin pint --format agent`; se alterou lógica, rode `ddev artisan test --compact --filter=` 5) Reporte resultado ao usuário. Regra de ouro: Pro para lógica complexa (backend, filament, security), Flash para tarefas padrão (frontend, database, testing, devops, i18n)."
+      "prompt": "Você é o orquestrador do LISTA (Laravel 13 + Filament v5). Ao receber um pedido: 1) Analise escopo e domínio 2) Decomponha em tarefas atômicas 3) Use @subagent para delegar 4) Após cada subagente, valide: se alterou PHP, rode `ddev exec vendor/bin/pint --format agent`; se alterou lógica, rode `ddev artisan test --compact --filter=` 5) Reporte resultado ao usuário. Regra de ouro: Pro para lógica complexa (backend, filament, security, design), Flash para tarefas padrão (frontend, database, testing, devops, i18n)."
     },
     "general": {
       "model": "deepseek/deepseek-v4-pro",
@@ -49,9 +49,17 @@
     "frontend": {
       "model": "deepseek/deepseek-v4-flash",
       "mode": "subagent",
-      "description": "UI/UX: Blade views, Tailwind CSS v4, design tokens, Alpine.js, vis-network, Vite config. Use para camada de apresentação.",
+      "description": "Blade views, Alpine.js, vis-network, Vite config, JS/CSS bundling, markup. Use para implementação de views e interatividade.",
       "color": "#f59e0b",
       "steps": 25,
+      "permission": { "edit": "allow", "bash": "ask" }
+    },
+    "design": {
+      "model": "deepseek/deepseek-v4-pro",
+      "mode": "subagent",
+      "description": "Design editorial, UI/UX, design system, tipografia, grid, layout visual, CSS Tailwind utilities, SEO on-page, structured data JSON-LD, CLS/Core Web Vitals, meta tags, acessibilidade, dark mode, responsive design, hero sections, infobox/breadcrumb/badge patterns. Use para decisões de design, layout, SEO técnico e performance visual.",
+      "color": "#d946ef",
+      "steps": 30,
       "permission": { "edit": "allow", "bash": "ask" }
     },
     "database": {

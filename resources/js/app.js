@@ -53,4 +53,28 @@ Alpine.data('gallery', (images) => ({
     }
 }))
 
+Alpine.data('themeSwitcher', () => ({
+    theme: localStorage.getItem('site-theme') || 'brutalist',
+    open: false,
+
+    init() {
+        this.$watch('theme', val => {
+            if (val === 'brutalist') {
+                document.documentElement.removeAttribute('data-theme')
+            } else {
+                document.documentElement.setAttribute('data-theme', val)
+            }
+            localStorage.setItem('site-theme', val)
+        })
+        if (this.theme !== 'brutalist') {
+            document.documentElement.setAttribute('data-theme', this.theme)
+        }
+    },
+
+    setTheme(val) {
+        this.theme = val
+        this.open = false
+    }
+}))
+
 Alpine.start()

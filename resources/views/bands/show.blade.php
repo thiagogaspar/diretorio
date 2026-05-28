@@ -13,7 +13,28 @@ $seo = new \App\Values\SeoData(
     type: 'music.group',
     image: $bandPhotoUrl,
     canonical: route('bands.show', $band),
-    schema: json_encode(['@context'=>'https://schema.org','@type'=>'MusicGroup','name'=>$band->name,'url'=>route('bands.show',$band)], JSON_UNESCAPED_SLASHES),
+    schema: json_encode([
+        '@context'=>'https://schema.org',
+        '@graph'=>[
+            ['@type'=>'BreadcrumbList','itemListElement'=>[
+                ['@type'=>'ListItem','position'=>1,'name'=>'Home','item'=>url('/')],
+                ['@type'=>'ListItem','position'=>2,'name'=>'Bands','item'=>route('bands.index')],
+                ['@type'=>'ListItem','position'=>3,'name'=>$band->name],
+            ]],
+            array_filter([
+                '@type'=>'MusicGroup',
+                'name'=>$band->name,
+                'url'=>route('bands.show',$band),
+                'genre'=>$band->genres->pluck('name')->implode(', ') ?: null,
+                'foundingDate'=>$band->formed_year ? (string)$band->formed_year : null,
+                'dissolutionDate'=>$band->dissolved_year ? (string)$band->dissolved_year : null,
+                'image'=>$bandPhotoUrl,
+                'member'=>$band->artists->map(fn($a)=>['@type'=>'Person','name'=>$a->name,'url'=>route('artists.show',$a)])->values()->toArray() ?: null,
+                'album'=>$band->albums->map(fn($a)=>['@type'=>'MusicAlbum','name'=>$a->title,'url'=>route('albums.show',$a),'datePublished'=>$a->release_year ? (string)$a->release_year : null])->values()->toArray() ?: null,
+                'location'=>$band->origin ?: null,
+            ]),
+        ],
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
 );
 @endphp
 <x-seo-meta :seo="$seo" />
@@ -27,22 +48,22 @@ $seo = new \App\Values\SeoData(
 <!-- Hero — foto sem shapes -->
 <section class="relative -mx-4 -mt-6 mb-8 overflow-hidden bg-black" style="aspect-ratio:16/4; max-height:45vh;">
     @if($heroPlaceholder)
-    <img src="{{ $heroPlaceholder }}" alt="{{ $band->name }}" class="absolute inset-0 w-full h-full object-cover opacity-30" fetchpriority="high" decoding="async" sizes="100vw">
+    <img src="{{ $heroPlaceholder }}" alt="{{ $band->name }}" width="1920" height="480" class="absolute inset-0 w-full h-full object-cover opacity-30" fetchpriority="high" decoding="sync" sizes="100vw">
     @endif
     <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20"></div>
     <div class="relative z-10 flex flex-col justify-end h-full">
         <div class="max-w-6xl mx-auto px-4 w-full pb-8 sm:pb-12 pt-6">
             <h1 class="font-display text-3xl sm:text-5xl md:text-6xl font-black text-white leading-none tracking-tight">{{ $band->name }}</h1>
             <div class="flex flex-wrap gap-2 mt-3">
-                @if($band->formed_year)<span class="badge text-white/70 border-white/20">{{ $band->formed_year }}&ndash;{{ $band->dissolved_year ?? __('common.bands.present') }}</span>@endif
-                @foreach($band->genres->take(3) as $genre)<span class="badge text-white/50 border-white/15">{{ $genre->name }}</span>@endforeach
+                @if($band->formed_year)<span class="badge badge-hero">{{ $band->formed_year }}&ndash;{{ $band->dissolved_year ?? __('common.bands.present') }}</span>@endif
+                @foreach($band->genres->take(3) as $genre)<span class="badge badge-hero text-white/50 border-white/15">{{ $genre->name }}</span>@endforeach
             </div>
         </div>
     </div>
 </section>
 
 <nav class="breadcrumb mb-6">
-    <a href="{{ route('home') }}">{{ __('common.home') }}</a><span>/</span>
+    <a href="{{ route('home') }}">{{ __('common.home_breadcrumb') }}</a><span>/</span>
     <a href="{{ route('bands.index') }}">{{ __('common.nav.bands') }}</a><span>/</span>
     <span>{{ $band->name }}</span>
 </nav>
@@ -52,7 +73,7 @@ $seo = new \App\Values\SeoData(
         <!-- Header compacto -->
         <div class="flex items-center gap-3 mb-6 pb-4 border-b-2 border-surface-200 dark:border-ink-700">
             @if($bandPhotoUrl)
-            <img src="{{ $bandPhotoUrl }}" alt="{{ $band->name }}" class="w-14 h-14 object-cover shrink-0 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
+            <img src="{{ $bandPhotoUrl }}" alt="{{ $band->name }}" width="56" height="56" class="w-14 h-14 object-cover shrink-0 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
             @endif
             <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-center gap-2">
@@ -76,7 +97,7 @@ $seo = new \App\Values\SeoData(
 
         <!-- Bio -->
         @if($band->bio)
-        <div class="prose max-w-none mb-8">{!! \Stevebauman\Purify\Facades\Purify::clean(Str::markdown($band->bio)) !!}</div>
+        <div class="prose max-w-none mb-8">{!! \Stevebauman\Purify\Facades\Purify::clean($band->bio) !!}</div>
         @endif
 
         <!-- Members -->
@@ -104,7 +125,7 @@ $seo = new \App\Values\SeoData(
                 <div class="border-2 border-surface-200 dark:border-ink-700 bg-white dark:bg-ink-800 hover:border-brand-500 dark:hover:border-brand-400 transition-colors">
                     @php $cover = $album->cover_art ? img_url($album->cover_art) : null; @endphp
                     @if($cover)
-                    <img src="{{ $cover }}" alt="{{ $album->title }}" class="w-full aspect-square object-cover" loading="lazy">
+                    <img src="{{ $cover }}" alt="{{ $album->title }}" width="400" height="400" class="w-full aspect-square object-cover" loading="lazy">
                     @else
                     <div class="w-full aspect-square bg-surface-100 dark:bg-ink-900 flex items-center justify-center text-surface-300 dark:text-ink-400">
                         <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="1.5" d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
@@ -131,7 +152,7 @@ $seo = new \App\Values\SeoData(
     </div>
 
     <!-- Infobox — Wikipedia style -->
-    <aside class="lg:w-72 mt-8 lg:mt-0 shrink-0 self-start order-1 lg:order-2 lg:sticky lg:top-16">
+    <aside class="lg:w-72 mt-8 lg:mt-0 shrink-0 self-start order-1 lg:order-2 lg:sticky lg:top-16" role="complementary">
         <x-infobox :title="$band->name" :items="[
             __('common.bands.members_heading') => (string) $band->artists->count(),
             __('common.nav.albums') => $band->albums->count() ? (string) $band->albums->count() : null,

@@ -9,7 +9,7 @@ if (request('label')) { $filterLabel = __('common.bands.label').': '.e(request('
 if (request('origin')) { $filterLabel = e(request('origin')) . " — "; }
 if (request('search')) { $filterLabel = __('common.bands.seo_search', ['query' => e(request('search'))]) . " — "; }
 $seo = new \App\Values\SeoData(
-    title: $filterLabel . (isset($genreName) ? $genreName . ' Bands' : __('common.bands.all')),
+    title: $filterLabel . (isset($genreName) ? $genreName . ' ' . __('common.nav.bands') : __('common.bands.all')),
     description: isset($genreName) ? __('common.bands.seo_description') : __('common.bands.seo_description'),
     canonical: isset($genreName) ? route('genres.show', request()->route('slug') ?? '') : route('bands.index'),
 );
@@ -23,7 +23,7 @@ $seo = new \App\Values\SeoData(
 <div class="max-w-6xl mx-auto px-4">
 @isset($genreName)
 <nav class="breadcrumb mb-5">
-    <a href="{{ route('home') }}">{{ __('common.home') }}</a><span>/</span>
+    <a href="{{ route('home') }}">{{ __('common.home_breadcrumb') }}</a><span>/</span>
     <a href="{{ route('bands.index') }}">{{ __('common.nav.bands') }}</a><span>/</span>
     <span>{{ $genreName }}</span>
 </nav>
@@ -75,7 +75,7 @@ $seo = new \App\Values\SeoData(
 @forelse($bands as $band)
     <a href="{{ route('bands.show', $band) }}" class="flex items-start gap-4 py-3 px-3 -mx-3 border-b-2 border-surface-200 dark:border-ink-700 hover:bg-surface-100 dark:hover:bg-ink-800/50 transition-colors group">
         @if($band->photo)
-        <img src="{{ img_url($band->photo) }}" alt="{{ $band->name }}" class="w-12 h-12 object-cover shrink-0 mt-0.5 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
+        <img src="{{ img_url($band->photo) }}" alt="{{ $band->name }}" width="48" height="48" class="w-12 h-12 object-cover shrink-0 mt-0.5 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
         @endif
         <div class="min-w-0 flex-1">
             <h2 class="font-display text-base font-bold text-surface-900 dark:text-ink-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 leading-tight">{{ $band->name }}</h2>

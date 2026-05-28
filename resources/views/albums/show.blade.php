@@ -1,22 +1,9 @@
 @extends('layouts.app')
 
 @section('head')
-@php
-if (!isset($seo)) {
-    $seo = new \App\Values\SeoData(
-        title: $album->title . ' — ' . $album->band->name,
-        description: $album->description ? Str::limit(strip_tags($album->description), 160) : $album->title . ' ' . __('common.albums.by') . ' ' . $album->band->name,
-        type: 'music.album',
-        image: $album->cover_art ? img_url($album->cover_art) : null,
-        canonical: route('albums.show', $album),
-    );
-}
-@endphp
 <x-seo-meta :seo="$seo" />
 @if($album->cover_art)
 <link rel="preload" href="{{ img_url($album->cover_art) }}" as="image" fetchpriority="high">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="{{ img_url($album->cover_art) }}">
 @endif
 @endsection
 
@@ -25,7 +12,7 @@ if (!isset($seo)) {
 <!-- Hero — foto sem shapes -->
 <section class="relative -mx-4 -mt-6 mb-8 overflow-hidden bg-black" style="aspect-ratio:16/4; max-height:45vh;">
     @if($album->cover_art)
-    <img src="{{ img_url($album->cover_art) }}" alt="{{ $album->title }}" class="absolute inset-0 w-full h-full object-cover opacity-30" fetchpriority="high" decoding="async" sizes="100vw">
+    <img src="{{ img_url($album->cover_art) }}" alt="{{ $album->title }}" width="1920" height="480" class="absolute inset-0 w-full h-full object-cover opacity-30" fetchpriority="high" decoding="sync" sizes="100vw">
     @endif
     <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20"></div>
     <div class="relative z-10 flex flex-col justify-end h-full">
@@ -36,7 +23,7 @@ if (!isset($seo)) {
 </section>
 
 <nav class="breadcrumb mb-8">
-    <a href="{{ route('home') }}">{{ __('common.home') }}</a><span>/</span>
+    <a href="{{ route('home') }}">{{ __('common.home_breadcrumb') }}</a><span>/</span>
     <a href="{{ route('albums.index') }}">{{ __('common.nav.albums') }}</a><span>/</span>
     <span>{{ $album->title }}</span>
 </nav>
@@ -45,7 +32,7 @@ if (!isset($seo)) {
     <!-- Cover — left side -->
     <div class="lg:w-72 shrink-0">
         @if($album->cover_art)
-        <img src="{{ img_url($album->cover_art) }}" alt="{{ $album->title }} cover" class="w-full aspect-square object-cover border-2 border-surface-200 dark:border-ink-700" fetchpriority="high">
+        <img src="{{ img_url($album->cover_art) }}" alt="{{ $album->title }} cover" width="600" height="600" class="w-full aspect-square object-cover border-2 border-surface-200 dark:border-ink-700" fetchpriority="high">
         @else
         <div class="w-full aspect-square bg-surface-100 dark:bg-ink-700 flex items-center justify-center text-surface-300 dark:text-ink-400 border-2 border-surface-200 dark:border-ink-700">
             <svg class="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>

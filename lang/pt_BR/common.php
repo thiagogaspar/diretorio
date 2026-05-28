@@ -1,15 +1,19 @@
 <?php
 
 return [
-    'home' => 'Início',
+    'home_breadcrumb' => 'Início',
     'search' => 'Buscar',
     'filter' => 'Filtrar',
     'view_all' => 'Ver todos',
     'skip_to_content' => 'Pular para o conteúdo',
     'back_to_top' => 'Topo',
     'back_to_home' => 'Voltar ao Início',
+    'min_read' => 'min de leitura',
+    'min_read_plural' => 'min de leitura',
+    'share' => 'Compartilhar',
     'admin' => 'Admin',
     'register' => 'Cadastre-se',
+    'or' => 'ou',
     'join' => 'Participe',
     'contribute' => 'Contribuir',
 
@@ -23,6 +27,7 @@ return [
         'genealogy' => 'Genealogia',
         'blog' => 'Blog',
         'sitemap' => 'Mapa do Site',
+        'menu_toggle' => 'Alternar menu de navegação',
     ],
 
     'home' => [
@@ -143,7 +148,7 @@ return [
         'bands' => 'Bandas',
         'website' => 'Visitar Site',
         'no_bands' => 'Nenhuma banda nesta gravadora ainda.',
-        'bands_count' => 'bandas',
+        'bands_count' => '{1}:count banda|[2,*]:count bandas',
         'seo_description' => 'Explore as gravadoras do diretório.',
         'aria_index' => 'Índice alfabético',
     ],
@@ -152,6 +157,7 @@ return [
         'title' => 'Blog',
         'read_more' => 'Ler mais',
         'no_posts' => 'Nenhum post ainda.',
+        'subtitle' => 'Notícias, artigos e histórias da cena musical local.',
         'seo_description' => 'Últimas notícias e artigos sobre música local.',
         'back' => '&larr; Voltar ao Blog',
     ],
@@ -160,6 +166,7 @@ return [
         'title' => 'Favoritos',
         'no_favorites' => 'Nenhum favorito ainda.',
         'browse_bands' => 'Explorar Bandas',
+        'login_prompt_rest' => 'para salvar favoritos.',
         'login_prompt' => 'Cadastre-se ou faça login para salvar favoritos.',
         'seo_description' => 'Suas bandas e artistas favoritos.',
     ],
@@ -183,8 +190,8 @@ return [
         'status_pending' => 'Pendente',
         'on' => 'em',
         'deleted' => '[excluído]',
-        'seo_description' => 'Seu perfil no LISTA.',
-        'seo_public' => 'Perfil de :name no LISTA.',
+        'seo_description' => 'Seu perfil no DIRETÓRIO.',
+        'seo_public' => 'Perfil de :name no DIRETÓRIO.',
         'logout' => 'Sair',
     ],
 
@@ -197,7 +204,7 @@ return [
         'register_button' => 'Cadastrar',
         'already_account' => 'Já tem uma conta?',
         'login' => 'Entrar',
-        'seo_title' => 'Cadastre-se — LISTA',
+        'seo_title' => 'Cadastre-se — DIRETÓRIO',
         'seo_description' => 'Crie uma conta para salvar favoritos, comentar e sugerir edições.',
     ],
 
