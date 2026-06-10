@@ -6,6 +6,8 @@ license: MIT
 
 # Filament Admin — LISTA
 
+> **TL;DR** — `Filament\Schemas\Components\Section` (NÃO Forms) · Role enforcement: admin delete/force, editor restore · TrashedFilter em soft-delete resources · RelationManagers inline no edit · 11 resources + Moderation page · Gate: `ddev bin pint --format agent` + acessar /admin
+
 ## Recursos (11 Resources)
 
 ### Navegação

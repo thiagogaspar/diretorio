@@ -6,6 +6,8 @@ license: MIT
 
 # Database Migrations — LISTA
 
+> **TL;DR** — Índices compostos em colunas de filtro · Soft deletes em Band, Artist, Album, Label, Tag · Factories para todos os models (9) · Morph maps para polymorphic · Seeders produzem dados demo · Gate: `ddev artisan migrate:fresh --seed`
+
 ## Tabelas e Schema
 
 ### Tabelas Principais (26 migrations, 20+ tabelas)

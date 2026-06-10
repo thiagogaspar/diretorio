@@ -6,6 +6,8 @@ license: MIT
 
 # Backend Laravel — LISTA
 
+> **TL;DR** — Auditable trait em models com soft deletes · `img_url()` nunca `Storage::url()` · eager load com `with()` em TODA listagem · `Cache::remember` só escalares (NUNCA collections) · `Filament\Schemas\Components\Section` (v5) · Gate: `ddev bin pint --format agent` + `ddev artisan test --compact`
+
 ## Convenções do Projeto
 
 ### Models

@@ -1,0 +1,54 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:8080"
+    env_file:
+      - .env
+    volumes:
+      - storage_data:/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.4
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-buffer-pool-size=64M
+      --innodb-log-buffer-size=8M
+      --max-connections=50
+      --performance-schema=off
+      --skip-log-bin
+      --innodb-flush-log-at-trx-commit=2
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - "-h"
+        - localhost
+        - "-u"
+        - root
+        - "-p${DB_PASSWORD}"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
+  storage_data:

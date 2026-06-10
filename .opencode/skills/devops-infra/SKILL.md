@@ -6,6 +6,8 @@ license: MIT
 
 # DevOps Infra — LISTA
 
+> **TL;DR** — Dev: `ddev start/stop`, produção: FrankenPHP Docker · Sempre `config:cache` em produção · Railway deploy automático via git push · Healthcheck `/` · Extensões PHP: pdo_mysql, gd, opcache, intl · Gate: `ddev start` (dev) ou `docker compose up` (prod)
+
 ## Ambientes
 
 ### Desenvolvimento (DDEV)

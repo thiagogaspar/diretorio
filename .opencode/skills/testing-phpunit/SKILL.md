@@ -6,6 +6,8 @@ license: MIT
 
 # Testing PHPUnit — LISTA
 
+> **TL;DR** — PHPUnit classes (NÃO Pest) · SQLite :memory: + cache array + queue sync · Factories para dados de teste · Feature tests > Unit tests · Cubra happy + failure + edge paths · Teste como guest e authenticated · Nunca remova testes existentes · Gate: `ddev artisan test --compact --filter=` + suite completo
+
 ## Configuração do Test Suite
 
 ```xml

@@ -6,6 +6,8 @@ license: MIT
 
 # Security Hardening — LISTA
 
+> **TL;DR** — CSP: img-src restrito (picsum, wikimedia) · Rate limiting: POST 5/min, GET listagens 30/min, API 60/min · RBAC: admin/editor/viewer roles · Whitelist colunas em `orderBy()` SEMPRE · NUNCA `{!! !!}` sem HTML Purifier · SQL via Eloquent (parametrizado) · Gate: verificar throttle middleware + CSP headers
+
 ## Medidas Implementadas
 
 ### CSP Headers (`SecurityHeaders` middleware)

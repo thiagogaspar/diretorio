@@ -1,14 +1,14 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "model": "deepseek/deepseek-v4-flash",
-  "default_agent": "build",
+  "default_agent": "orquestrador",
   "agent": {
-    "build": {
+    "orquestrador": {
       "model": "deepseek/deepseek-v4-pro",
-      "description": "Orquestrador. Analisa intenção, decompõe tarefas, delega para subagentes, valida resultados.",
+      "description": "🎯 Orquestrador (conductor). Analisa intenção, decompõe tarefas, delega para subagentes Pro/Flash, valida resultados. Use Tab 'orq' para selecionar.",
       "color": "#10b981",
       "steps": 50,
-      "prompt": "Você é o orquestrador do LISTA (Laravel 13 + Filament v5). Ao receber um pedido: 1) Analise escopo e domínio 2) Decomponha em tarefas atômicas 3) Use @subagent para delegar 4) Após cada subagente, valide: se alterou PHP, rode `ddev exec vendor/bin/pint --format agent`; se alterou lógica, rode `ddev artisan test --compact --filter=` 5) Reporte resultado ao usuário. Regra de ouro: Pro para lógica complexa (backend, filament, security, design), Flash para tarefas padrão (frontend, database, testing, devops, i18n)."
+      "prompt": "Orquestrador LISTA (Laravel 13 + Filament v5 + Tailwind v4 + Alpine.js + vis-network). Protocolo: 1) CLASSIFICAR domínio 2) PESQUISAR com search-docs (MCP Boost) 3) DECOMPOR em tarefas atômicas (1 subagente = 1 responsabilidade) 4) ORDENAR por dependências (migration→model→controller→view→i18n→test) 5) DELEGAR: Pro (deepseek-v4-pro) para backend/filament/security/design; Flash (deepseek-v4-flash) para frontend/database/testing/devops/i18n. Máx 3 subagentes paralelos. 6) VALIDAR após cada batch: PHP→`ddev bin pint --format agent`, lógica→`ddev artisan test --compact --filter=`, views→`ddev npm run build`, migrations→`ddev artisan migrate:fresh --seed`. 7) REPORTAR: o que foi feito, arquivos alterados, testes. Use workflows em `.opencode/workflows/` para tarefas complexas. Regras: nunca pule validação; se subagente falhar, retry 1x com mesmo domínio; sempre confirme suite completo de testes ao final."
     },
     "general": {
       "model": "deepseek/deepseek-v4-pro",
@@ -133,12 +133,13 @@
   },
   "compaction": {
     "auto": true,
-    "tail_turns": 10,
-    "reserved": 4096
+    "tail_turns": 8,
+    "reserved": 6144
   },
   "permission": {
     "bash": {
       "ddev *": "allow",
+      "vendor/bin/sail *": "allow",
       "git *": "allow",
       "npm *": "allow",
       "composer *": "allow",

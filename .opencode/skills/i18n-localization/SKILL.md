@@ -6,6 +6,8 @@ license: MIT
 
 # i18n / Localization — LISTA
 
+> **TL;DR** — Toda string visível usa `__()` · Adicionar key em AMBOS `en/` e `pt_BR/` · Locale default `pt_BR`, fallback `en` · Chaves: `entity.action` (band.create) · Interpolação: `:param` · NÃO traduzir nomes próprios, slugs, URLs · Gate: verificar views em ambos idiomas
+
 ## Estrutura
 
 ```

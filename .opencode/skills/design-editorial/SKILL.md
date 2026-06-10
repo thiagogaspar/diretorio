@@ -6,6 +6,8 @@ license: MIT
 
 # Design Editorial + UI/UX — LISTA
 
+> **TL;DR** — Brutalist: zero border-radius, 2px borders, high contrast · `img_url()` SEMPRE (nunca Storage::url) · CLS: aspect-ratio + width/height em TODA img · SeoData value object + JSON-LD em páginas de detalhe · Hero: `-mx-4 -mt-6 overflow-hidden bg-black` · Dark mode: `.dark:` em TODAS as cores · `@forelse` (nunca `@foreach` sem empty) · Gate: `ddev npm run build` + teste visual ambos os modos
+
 ## Filosofia Visual
 
 ```

@@ -6,6 +6,8 @@ license: MIT
 
 # Frontend Blade + Tailwind — LISTA
 
+> **TL;DR** — Design tokens: brand=Emerald, accent=Purple, warm=Amber, surface=WarmGray, ink=Dark · Tailwind v4 `@theme` (sem tailwind.config.js) · Alpine.js para interatividade · `img_url()` para imagens · Dark mode `.dark` class + Flux localStorage · Componentes reutilizáveis em `resources/views/components/` · Gate: `ddev npm run build`
+
 ## Design System
 
 ### Tokens (definidos em `resources/css/app.css` via `@theme`)

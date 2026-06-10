@@ -12,6 +12,9 @@ mkdir -p storage/framework/cache storage/framework/sessions storage/framework/vi
 mkdir -p bootstrap/cache
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
+# Ensure storage symlink exists
+php artisan storage:link 2>/dev/null || true
+
 # Cache config (non-fatal)
 php artisan config:cache && echo "[OK] config:cache" || echo "[FAIL] config:cache"
 

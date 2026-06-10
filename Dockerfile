@@ -16,9 +16,8 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
-RUN npm run build && npm prune --omit=dev
-
 RUN composer install --no-dev --optimize-autoloader
+RUN npm run build && npm prune --omit=dev
 
 RUN php artisan view:cache
 
