@@ -25,7 +25,7 @@ class SecurityHeaders
             $csp = "default-src 'self'; ".
                    "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* http://[::1]:*; ".
                    "style-src 'self' 'unsafe-inline' https://fonts.bunny.net http://localhost:*; ".
-                   "img-src 'self' data: https://picsum.photos https://*.picsum.photos https://via.placeholder.com https://*.wikimedia.org http://localhost:*; ".
+                    "img-src 'self' data: https://picsum.photos https://*.picsum.photos https://via.placeholder.com https://*.wikimedia.org https://ui-avatars.com https://*.ui-avatars.com http://localhost:*; ".
                    "font-src 'self' https://fonts.bunny.net; ".
                    "connect-src 'self' ws://localhost:* ws://[::1]:* http://localhost:* https://fonts.bunny.net; ".
                     "frame-src https://open.spotify.com https://www.youtube.com https://bandcamp.com; ".
@@ -37,7 +37,7 @@ class SecurityHeaders
             $csp = "default-src 'self'; ".
                    "script-src 'self' 'unsafe-inline' 'unsafe-eval' {$origin}; ".
                    "style-src 'self' 'unsafe-inline' https://fonts.bunny.net {$origin}; ".
-                    "img-src 'self' data: https://picsum.photos https://*.picsum.photos https://*.wikimedia.org {$origin}; ".
+                     "img-src 'self' data: https://picsum.photos https://*.picsum.photos https://*.wikimedia.org https://ui-avatars.com https://*.ui-avatars.com {$origin}; ".
                    "font-src 'self' https://fonts.bunny.net; ".
                    "connect-src 'self' https://fonts.bunny.net {$origin}; ".
                    "frame-src https://open.spotify.com https://www.youtube.com https://bandcamp.com; ".

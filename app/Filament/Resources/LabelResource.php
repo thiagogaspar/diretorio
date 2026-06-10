@@ -69,7 +69,7 @@ class LabelResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->searchable()->sortable()->weight('bold'),
-                ImageColumn::make('logo')->circular()->size(40),
+                ImageColumn::make('logo')->circular()->size(40)->defaultImageUrl(asset('img/placeholder-label.svg')),
                 TextColumn::make('country')->sortable(),
                 TextColumn::make('founded_year')->sortable(),
                 TextColumn::make('bands_count')->counts('bands')->sortable()->label('Bands'),

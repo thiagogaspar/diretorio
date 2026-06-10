@@ -69,7 +69,7 @@ class AlbumResource extends Resource
                 TextColumn::make('band.name')->searchable()->sortable()->label('Band'),
                 TextColumn::make('title')->searchable()->sortable()->weight('bold'),
                 TextColumn::make('release_year')->sortable(),
-                ImageColumn::make('cover_art')->circular()->size(40),
+                ImageColumn::make('cover_art')->circular()->size(40)->defaultImageUrl(asset('img/placeholder-album.svg')),
                 TextColumn::make('created_at')->dateTime('Y-m-d')->sortable()->toggleable(),
             ])
             ->filters([

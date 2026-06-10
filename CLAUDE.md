@@ -12,6 +12,9 @@
 | 2026-04-30 17:15 | CLI | Auto-WebP, Hero SVG animado, Dark mode suave, Genealogy refactor (clusters/hierarchical/focus), Like/favorite, Fotos nas listagens, Stats home, Lightbox, Breadcrumb component. All routes 200. |
 | 2026-05-03 19:00 | CLI | **Auditoria + Bugfix completo**: 17+ bugs (P0-XSS-404-N+1-CSP) em 35+ arquivos. img_url() helper, Section imports, Dockerfile db:seed crash, Cache::remember só stats, hero band card. Commits `5e8ed9d`→`fe97754`. |
 | 2026-05-03 21:30 | CLI | Artist thumbs portrait + i18n sweep + gallery lightbox. Alpines.js lightbox artist/show, ~150 __() em 25 blades, thumbs portrait w-14-h-20/home-aspect-[2/3]/seed-400x600. Commit `a5bf4af`. |
+| 2026-06-10 21:00 | CLI | **Deploy DigitalOcean + dados reais**: Droplet 458MB RAM, Docker prod stack (FrankenPHP + MySQL 8.4 otimizado), swap 1GB. DNS `198.199.69.139`. Renomeado LISTA→DIRETÓRIO (APP_NAME, brand, titles). Fix sitemap XML esc., Album `getRouteKeyName()`. |
+| 2026-06-10 22:00 | CLI | **Import chat + Support members**: 4 artistas (Ênio, Daniel, Michael, Felipe) + 60 bandas + 76 links. Migration `is_support` no pivot band_artist (raw SQL FK drop/re-add). Modelos `officialArtists()`/`supportArtists()`. Seções split na band/show. Purge total da seed demo. SVG placeholders no frontend (bands/artists/home index cards). |
+| 2026-06-10 23:00 | CLI | **Genealogy redesign + admin 403 fix**: ForceAtlas2 physics, 40+ cores por gênero, particle canvas background, hover glow, click-to-focus, dblclick navigate, keyboard F/R. Glassmorphism UI. Admin 403: User model `implements FilamentUser` + `canAccessPanel()`. AdminPanelProvider full restore. CSP: +`ui-avatars.com`. Admin logo SVG responsivo `h-full w-auto`. Placeholders SVG nos 4 Resources (`defaultImageUrl()`) + User avatar. Commit `4d32c46`. |
 
 ## Stack
 - **Laravel 13** + PHP 8.4
@@ -164,6 +167,25 @@ GET  /api/labels          → REST API
 ### Prod
 - [x] Cache: reativar Cache::remember (file store)
 - [x] config:cache + route:cache + view:cache (via railway.json build)
+- **Ambiente atual**: DigitalOcean Droplet 458MB RAM + 1GB swap, Ubuntu 24.04
+- **IP**: `198.199.69.139`
+- **Stack**: Docker prod (`docker-compose.prod.yml`) — FrankenPHP (app) + MySQL 8.4 otimizado (64MB buffer pool)
+- **Deploy via rsync + docker compose cp**: Sincronizar arquivos locais → droplet → copiar para container → `artisan optimize:clear`
+- **Credenciais admin**: `admin@lista.site` / `1234`
+- **Session**: `SESSION_SECURE_COOKIE=false` (HTTP até ter HTTPS), driver=database
+- **CSP em produção**: `img-src` inclui `ui-avatars.com`, `wikimedia.org`, dados locais
+
+## Deploy DigitalOcean
+1. `rsync -avz --relative <arquivos> root@198.199.69.139:/app/`
+2. `ssh root@198.199.69.139 'docker compose -f /app/docker-compose.prod.yml cp /app/<path> app:/app/<path>'`
+3. `ssh root@198.199.69.139 'docker compose -f /app/docker-compose.prod.yml exec -T app php artisan optimize:clear'`
+4. Para múltiplos arquivos, `rsync` todos primeiro, depois `docker compose cp` um por um
+
+### ⚠️ Cuidados com deploy
+- `SESSION_SECURE_COOKIE=true` quebra login em HTTP — manter `false` até ter HTTPS/domínio
+- Source está no container (imagem Docker), não volume-mounted — **toda** alteração de código exige `docker compose cp` + `optimize:clear`
+- Mudanças em JS/CSS: rodar `npm run build` local e rsync novos hashes para o droplet
+- Pint: rodar `vendor/bin/sail bin pint --dirty --format agent` localmente antes de sync
 
 ## Deploy Railway
 1. `git push` (Railway conecta via GitHub)

@@ -98,7 +98,7 @@ class ArtistResource extends Resource
             ])
             ->columns([
                 TextColumn::make('name')->searchable()->sortable()->weight('bold'),
-                ImageColumn::make('photo')->circular()->size(40),
+                ImageColumn::make('photo')->circular()->size(40)->defaultImageUrl(asset('img/placeholder-artist.svg')),
                 TextColumn::make('origin')->searchable()->sortable(),
                 TextColumn::make('bands')->counts('bands')->sortable()->label('Bands')->toggleable(),
                 IconColumn::make('is_active')->boolean()->toggleable(),

@@ -102,7 +102,7 @@ class BandResource extends Resource
             ])
             ->columns([
                 TextColumn::make('name')->searchable()->sortable()->weight('bold'),
-                ImageColumn::make('photo')->circular()->size(40),
+                ImageColumn::make('photo')->circular()->size(40)->defaultImageUrl(asset('img/placeholder-band.svg')),
                 TextColumn::make('genres.name')->badge()->sortable(),
                 TextColumn::make('label.name')->badge()->color('gray')->sortable(),
                 TextColumn::make('formed_year')->sortable(),
