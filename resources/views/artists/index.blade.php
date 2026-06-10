@@ -43,6 +43,10 @@ $seo = new \App\Values\SeoData(
     <a href="{{ route('artists.show', $artist) }}" class="flex items-start gap-4 py-3 px-3 -mx-3 border-b-2 border-surface-200 dark:border-ink-700 hover:bg-surface-100 dark:hover:bg-ink-800/50 transition-colors group">
         @if($artist->photo)
         <img src="{{ img_url($artist->photo) }}" alt="{{ $artist->name }}" width="56" height="80" class="w-14 h-20 object-cover shrink-0 mt-0.5 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
+        @else
+        <div class="w-14 h-20 shrink-0 mt-0.5 border-2 border-surface-200 dark:border-ink-600 bg-accent-100 dark:bg-accent-900/30 flex items-center justify-center">
+            <svg class="w-6 h-6 text-accent-300 dark:text-accent-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        </div>
         @endif
         <div class="min-w-0 flex-1">
             <h2 class="font-display text-base font-bold text-surface-900 dark:text-ink-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 leading-tight">{{ $artist->name }}</h2>

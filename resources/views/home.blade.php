@@ -3,7 +3,7 @@
 @section('head')
 @php
 $seo = new \App\Values\SeoData(
-    title: 'DIRETÓRIO — Band Genealogy',
+    title: 'Genealogia de Bandas',
     description: 'Explore connections between bands and artists. A community-built directory of local original music.',
     canonical: url('/'),
     schema: json_encode([
@@ -109,6 +109,10 @@ $seo = new \App\Values\SeoData(
             <a href="{{ route('bands.show', $band) }}" class="bg-white dark:bg-ink-800 p-4 hover:bg-surface-50 dark:hover:bg-ink-700 group flex flex-col gap-2">
                 @if($band->photo)
                 <img src="{{ img_url($band->photo) }}" alt="{{ $band->name }}" width="600" height="400" class="w-full aspect-[3/2] object-cover border-2 border-surface-200 dark:border-ink-600" loading="lazy">
+                @else
+                <div class="w-full aspect-[3/2] bg-surface-100 dark:bg-ink-900 border-2 border-surface-200 dark:border-ink-600 flex items-center justify-center">
+                    <svg class="w-10 h-10 text-surface-300 dark:text-ink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="1.2" d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3" fill="currentColor"/><circle cx="18" cy="16" r="3" fill="currentColor"/></svg>
+                </div>
                 @endif
                 <h3 class="font-display font-bold text-sm text-surface-900 dark:text-ink-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 leading-tight">{{ $band->name }}</h3>
                 <div class="text-[11px] text-surface-500 dark:text-ink-500 leading-relaxed">
@@ -136,6 +140,10 @@ $seo = new \App\Values\SeoData(
             <a href="{{ route('artists.show', $artist) }}" class="bg-white dark:bg-ink-800 p-4 hover:bg-surface-50 dark:hover:bg-ink-700 group flex flex-col gap-2">
                 @if($artist->photo)
                 <img src="{{ img_url($artist->photo) }}" alt="{{ $artist->name }}" width="400" height="600" class="w-full aspect-[2/3] object-cover border-2 border-surface-200 dark:border-ink-600" loading="lazy">
+                @else
+                <div class="w-full aspect-[2/3] bg-accent-100 dark:bg-accent-900/30 border-2 border-surface-200 dark:border-ink-600 flex items-center justify-center">
+                    <svg class="w-10 h-10 text-accent-300 dark:text-accent-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="1.2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                </div>
                 @endif
                 <h3 class="font-display font-bold text-sm text-surface-900 dark:text-ink-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 leading-tight">{{ $artist->name }}</h3>
                 <div class="text-[11px] text-surface-500 dark:text-ink-500">

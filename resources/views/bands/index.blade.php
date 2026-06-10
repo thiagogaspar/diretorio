@@ -76,6 +76,10 @@ $seo = new \App\Values\SeoData(
     <a href="{{ route('bands.show', $band) }}" class="flex items-start gap-4 py-3 px-3 -mx-3 border-b-2 border-surface-200 dark:border-ink-700 hover:bg-surface-100 dark:hover:bg-ink-800/50 transition-colors group">
         @if($band->photo)
         <img src="{{ img_url($band->photo) }}" alt="{{ $band->name }}" width="48" height="48" class="w-12 h-12 object-cover shrink-0 mt-0.5 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
+        @else
+        <div class="w-12 h-12 shrink-0 mt-0.5 border-2 border-surface-200 dark:border-ink-600 bg-surface-100 dark:bg-ink-900 flex items-center justify-center">
+            <svg class="w-5 h-5 text-surface-300 dark:text-ink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="1.5" d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3" fill="currentColor"/><circle cx="18" cy="16" r="3" fill="currentColor"/></svg>
+        </div>
         @endif
         <div class="min-w-0 flex-1">
             <h2 class="font-display text-base font-bold text-surface-900 dark:text-ink-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 leading-tight">{{ $band->name }}</h2>
