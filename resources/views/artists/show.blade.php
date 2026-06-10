@@ -112,7 +112,10 @@ $seo = new \App\Values\SeoData(
                 <div class="pl-4">
                     <a href="{{ route('bands.show', $band) }}" class="font-display text-sm font-bold text-brand-600 dark:text-brand-400 hover:underline">{{ $band->name }}</a>
                     @if($band->pivot->role)
-                    <span class="badge badge-surface text-[10px] ml-1">{{ $band->pivot->role }}</span>
+                    <span class="badge {{ $band->pivot->is_support ? 'badge-accent' : 'badge-surface' }} text-[10px] ml-1">{{ $band->pivot->role }}</span>
+                    @endif
+                    @if($band->pivot->is_support)
+                    <span class="badge badge-surface text-[9px] ml-1 opacity-60">{{ __('common.bands.support_member') }}</span>
                     @endif
                     @if($band->pivot->is_current)
                     <span class="badge badge-brand text-[10px] ml-1">{{ __('common.artists.present') }}</span>

@@ -32,7 +32,7 @@ class Band extends Model
     public function artists(): BelongsToMany
     {
         return $this->belongsToMany(Artist::class, 'band_artist')
-            ->withPivot(['role', 'joined_year', 'left_year', 'is_current'])
+            ->withPivot(['role', 'is_support', 'joined_year', 'left_year', 'is_current'])
             ->withTimestamps()
             ->orderByPivot('joined_year');
     }
@@ -75,6 +75,16 @@ class Band extends Model
     public function currentArtists(): BelongsToMany
     {
         return $this->artists()->wherePivot('is_current', true);
+    }
+
+    public function officialArtists(): BelongsToMany
+    {
+        return $this->artists()->wherePivot('is_support', false);
+    }
+
+    public function supportArtists(): BelongsToMany
+    {
+        return $this->artists()->wherePivot('is_support', true);
     }
 
     public function genres(): BelongsToMany

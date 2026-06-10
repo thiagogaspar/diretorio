@@ -84,6 +84,8 @@ return [
         'seo_search' => 'Search: :query — All Bands',
         'members_heading' => 'Members',
         'no_members' => 'No members registered.',
+        'support_members_heading' => 'Support Members',
+        'support_member' => 'support member',
         'discography' => 'Discography',
         'connections' => 'Connections',
         'formed' => 'Formed',

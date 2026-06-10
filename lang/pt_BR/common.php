@@ -84,6 +84,8 @@ return [
         'seo_search' => 'Busca: :query — Todas as Bandas',
         'members_heading' => 'Integrantes',
         'no_members' => 'Nenhum integrante registrado.',
+        'support_members_heading' => 'Membros de Apoio',
+        'support_member' => 'membro de apoio',
         'discography' => 'Discografia',
         'connections' => 'Conexões',
         'formed' => 'Formação',

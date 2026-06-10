@@ -32,7 +32,7 @@ class Artist extends Model
     public function bands(): BelongsToMany
     {
         return $this->belongsToMany(Band::class, 'band_artist')
-            ->withPivot(['role', 'joined_year', 'left_year', 'is_current'])
+            ->withPivot(['role', 'is_support', 'joined_year', 'left_year', 'is_current'])
             ->withTimestamps()
             ->orderByPivot('joined_year');
     }

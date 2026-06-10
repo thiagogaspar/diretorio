@@ -29,7 +29,7 @@ $seo = new \App\Values\SeoData(
                 'foundingDate'=>$band->formed_year ? (string)$band->formed_year : null,
                 'dissolutionDate'=>$band->dissolved_year ? (string)$band->dissolved_year : null,
                 'image'=>$bandPhotoUrl,
-                'member'=>$band->artists->map(fn($a)=>['@type'=>'Person','name'=>$a->name,'url'=>route('artists.show',$a)])->values()->toArray() ?: null,
+                'member'=>$band->artists->where('pivot.is_support', false)->map(fn($a)=>['@type'=>'Person','name'=>$a->name,'url'=>route('artists.show',$a)])->values()->toArray() ?: null,
                 'album'=>$band->albums->map(fn($a)=>['@type'=>'MusicAlbum','name'=>$a->title,'url'=>route('albums.show',$a),'datePublished'=>$a->release_year ? (string)$a->release_year : null])->values()->toArray() ?: null,
                 'location'=>$band->origin ?: null,
             ]),
@@ -101,9 +101,15 @@ $seo = new \App\Values\SeoData(
         @endif
 
         <!-- Members -->
-        <x-section-header tag="h2" :count="$band->artists->count()">{{ __('common.bands.members_heading') }}</x-section-header>
+        @php
+            $officialMembers = $band->artists->where('pivot.is_support', false);
+            $supportMembers = $band->artists->where('pivot.is_support', true);
+        @endphp
+
+        {{-- Official Members --}}
+        <x-section-header tag="h2" :count="$officialMembers->count()">{{ __('common.bands.members_heading') }}</x-section-header>
         <x-data-table>
-            @forelse($band->artists as $artist)
+            @forelse($officialMembers as $artist)
             <div class="flex items-center justify-between px-4 py-2.5 border-b-2 border-surface-200 dark:border-ink-700 last:border-0 hover:bg-surface-50 dark:hover:bg-ink-700/50">
                 <div class="flex items-center gap-2 min-w-0">
                     <a href="{{ route('artists.show', $artist) }}" class="font-display text-sm font-bold text-brand-600 dark:text-brand-400 hover:underline truncate">{{ $artist->name }}</a>
@@ -115,6 +121,23 @@ $seo = new \App\Values\SeoData(
             <p class="px-4 py-3 text-sm text-surface-400">{{ __('common.bands.no_members') }}</p>
             @endforelse
         </x-data-table>
+
+        {{-- Support Members --}}
+        @if($supportMembers->isNotEmpty())
+        <x-section-header tag="h3" :count="$supportMembers->count()" class="mt-8">{{ __('common.bands.support_members_heading') }}</x-section-header>
+        <x-data-table>
+            @foreach($supportMembers as $artist)
+            <div class="flex items-center justify-between px-4 py-2.5 border-b-2 border-surface-200 dark:border-ink-700 last:border-0 hover:bg-surface-50 dark:hover:bg-ink-700/50">
+                <div class="flex items-center gap-2 min-w-0">
+                    <a href="{{ route('artists.show', $artist) }}" class="font-display text-sm font-bold text-accent-600 dark:text-accent-400 hover:underline truncate">{{ $artist->name }}</a>
+                    @if($artist->pivot->role)<span class="badge badge-accent text-[10px] shrink-0">{{ $artist->pivot->role }}</span>@endif
+                    <span class="badge badge-surface text-[9px] shrink-0 opacity-60">{{ __('common.bands.support_member') }}</span>
+                </div>
+                <span class="font-display text-[10px] font-bold text-surface-400 shrink-0 ml-3">{{ $artist->pivot->joined_year ?? '?' }}&ndash;{{ $artist->pivot->left_year ?? '?' }}</span>
+            </div>
+            @endforeach
+        </x-data-table>
+        @endif
 
         <!-- Discography -->
         @if($band->albums->count())
@@ -154,7 +177,7 @@ $seo = new \App\Values\SeoData(
     <!-- Infobox — Wikipedia style -->
     <aside class="lg:w-72 mt-8 lg:mt-0 shrink-0 self-start order-1 lg:order-2 lg:sticky lg:top-16" role="complementary">
         <x-infobox :title="$band->name" :items="[
-            __('common.bands.members_heading') => (string) $band->artists->count(),
+            __('common.bands.members_heading') => (string) $band->officialArtists()->count(),
             __('common.nav.albums') => $band->albums->count() ? (string) $band->albums->count() : null,
             __('common.bands.formed') => $band->formed_year ? (string) $band->formed_year : null,
             __('common.bands.dissolved') => $band->dissolved_year ? (string) $band->dissolved_year : null,
