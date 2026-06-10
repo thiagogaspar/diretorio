@@ -13,6 +13,11 @@ class SetupWidget extends Widget
 
     public bool $seeded = false;
 
+    public static function canView(): bool
+    {
+        return !app()->isProduction();
+    }
+
     public function seed(): void
     {
         Artisan::call('app:create-admin-user');

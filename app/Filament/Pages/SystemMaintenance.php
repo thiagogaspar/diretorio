@@ -17,6 +17,10 @@ class SystemMaintenance extends Page
 
     protected function getHeaderActions(): array
     {
+        if (app()->isProduction()) {
+            return [];
+        }
+
         return [
             Action::make('runProductionSeeder')
                 ->label('Run Production Seeder')

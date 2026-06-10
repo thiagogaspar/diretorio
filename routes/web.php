@@ -89,22 +89,24 @@ Route::post('/logout', function () {
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap')
     ->middleware('throttle:10,1');
 
-Route::get('/setup', function () {
-    Artisan::call('app:create-admin-user');
-    Artisan::call('db:seed', [
-        '--class' => 'ProductionMockDataSeeder',
-        '--force' => true,
-    ]);
+if (!app()->isProduction()) {
+    Route::get('/setup', function () {
+        Artisan::call('app:create-admin-user');
+        Artisan::call('db:seed', [
+            '--class' => 'ProductionMockDataSeeder',
+            '--force' => true,
+        ]);
 
-    return response()->json([
-        'admin_user' => 'admin@lista.site / 1234 (role: admin)',
-        'seeded' => true,
-        'counts' => [
-            'bands' => Band::count(),
-            'artists' => Artist::count(),
-            'labels' => Label::count(),
-            'albums' => Album::count(),
-            'genres' => Genre::count(),
-        ],
-    ]);
-})->middleware('throttle:3,60');
+        return response()->json([
+            'admin_user' => 'admin@lista.site / 1234 (role: admin)',
+            'seeded' => true,
+            'counts' => [
+                'bands' => Band::count(),
+                'artists' => Artist::count(),
+                'labels' => Label::count(),
+                'albums' => Album::count(),
+                'genres' => Genre::count(),
+            ],
+        ]);
+    })->middleware('throttle:3,60');
+}
