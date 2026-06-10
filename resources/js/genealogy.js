@@ -1,149 +1,393 @@
 import { DataSet, Network } from 'vis-network/standalone'
 
+// Modern genre color palette
+const GENRE_COLORS = {
+    'black-metal':       ['#0d0d0d', '#333333'],
+    'death-metal':       ['#1a0a0a', '#8b0000'],
+    'thrash-metal':      ['#1a0f00', '#cc5500'],
+    'doom-metal':        ['#111108', '#4a4a2a'],
+    'sludge-metal':      ['#1a1408', '#6b5a1a'],
+    'heavy-metal':       ['#111122', '#3355aa'],
+    'metalcore':         ['#0f0f1a', '#8844aa'],
+    'deathcore':         ['#0d0d0d', '#661122'],
+    'nu-metal':          ['#111122', '#ff4444'],
+    'hard-rock':         ['#1a1a0a', '#cc8800'],
+    'punk-rock':         ['#1a0a0a', '#dd2222'],
+    'hardcore':          ['#0a0a0a', '#ff4444'],
+    'grunge':            ['#0f1a0f', '#446622'],
+    'alternative-rock':  ['#0a1a1a', '#228888'],
+    'indie-rock':        ['#0f1a1a', '#44aaaa'],
+    'post-rock':         ['#0a1a1a', '#669999'],
+    'progressive-rock':  ['#0a0f1a', '#4466aa'],
+    'psychedelic-rock':  ['#1a0a1a', '#aa44aa'],
+    'post-punk':         ['#11111a', '#666699'],
+    'new-wave':          ['#0a1a1a', '#44cccc'],
+    'gothic-rock':       ['#0f0f1a', '#6633aa'],
+    'shoegaze':          ['#1a0f1a', '#8866cc'],
+    'dream-pop':         ['#1a1a1a', '#cc88cc'],
+    'noise-rock':        ['#111111', '#aaaaaa'],
+    'experimental':      ['#0f0f0f', '#88aa88'],
+    'electronic':        ['#0a0f1a', '#3366cc'],
+    'industrial':        ['#1a1a0a', '#888844'],
+    'folk-rock':         ['#1a1a0f', '#886633'],
+    'blues-rock':        ['#1a0f0a', '#aa6633'],
+    'country':           ['#1a1a0a', '#886622'],
+    'jazz':              ['#0f0f1a', '#334488'],
+    'hip-hop':           ['#1a0f0a', '#cc6633'],
+    'reggae':            ['#0f1a0f', '#448822'],
+    'ska':               ['#1a1a1a', '#888888'],
+    'pop-rock':          ['#1a0f1a', '#cc4488'],
+    'screamo':           ['#0d0d0d', '#ff2266'],
+    'emo':               ['#0f0f0f', '#ff4488'],
+    'post-grunge':       ['#111a11', '#557733'],
+    'stoner-rock':       ['#1a1a0f', '#aa8844'],
+    'southern-rock':     ['#1a1a0a', '#aa6622'],
+    'funk':              ['#1a0f0a', '#cc6633'],
+    'soul':              ['#1a0f0a', '#cc5544'],
+    'disco':             ['#1a0a1a', '#cc44aa'],
+    'house':             ['#0a1a1a', '#44ccaa'],
+    'techno':            ['#0a0f1a', '#3366aa'],
+    'drum-and-bass':     ['#0a0a1a', '#334488'],
+    'dubstep':           ['#0a0a0a', '#664488'],
+    'synthwave':         ['#1a0a1a', '#cc44cc'],
+    'trance':            ['#0a1a1a', '#44aacc'],
+    'ambient':           ['#0f0f1a', '#334466'],
+    'classical':         ['#1a1a0f', '#886644'],
+    'rap-metal':         ['#1a0a0a', '#cc4422'],
+    'electronicore':     ['#0a0f1a', '#4466cc'],
+    'default':           ['#111122', '#4466aa'],
+}
+
+function genreColors(genre) {
+    return GENRE_COLORS[genre] || GENRE_COLORS['default']
+}
+
+// Animated canvas background
+function createAnimatedBackground(container) {
+    const canvas = document.createElement('canvas')
+    canvas.id = 'graph-bg-canvas'
+    canvas.style.cssText = 'position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0.4'
+    container.style.position = 'relative'
+    container.appendChild(canvas)
+
+    const ctx = canvas.getContext('2d')
+    const particles = []
+    const PARTICLE_COUNT = 60
+
+    function resize() {
+        canvas.width = container.offsetWidth
+        canvas.height = container.offsetHeight
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            size: Math.random() * 1.5 + 0.5,
+            opacity: Math.random() * 0.4 + 0.1,
+        })
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        for (const p of particles) {
+            p.x += p.vx
+            p.y += p.vy
+            if (p.x < 0) p.x = canvas.width
+            if (p.x > canvas.width) p.x = 0
+            if (p.y < 0) p.y = canvas.height
+            if (p.y > canvas.height) p.y = 0
+
+            ctx.beginPath()
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+            ctx.fillStyle = `rgba(255,255,255,${p.opacity})`
+            ctx.fill()
+        }
+        requestAnimationFrame(animate)
+    }
+    animate()
+}
+
 export function initGenealogy() {
-    var status = document.getElementById('graph-status')
-    var container = document.getElementById('full-genealogy-graph')
+    const status = document.getElementById('graph-status')
+    const container = document.getElementById('full-genealogy-graph')
     if (!container) return
     container.innerHTML = ''
 
+    // Animated background particles
+    createAnimatedBackground(container)
+
     status.textContent = 'Fetching...'
 
-    var bandColor = { bg: '#111111', border: '#ffffff' }
-    var artistColor = { bg: '#222222', border: '#cccccc' }
-
     fetch('/api/genealogy')
-        .then(function(r) { return r.json() })
-        .then(function(data) {
+        .then(r => r.json())
+        .then(data => {
             status.textContent = 'Rendering ' + data.nodes.length + ' nodes...'
 
-            var nodeColors = {}
+            // Enhanced nodes
+            data.nodes.forEach(n => {
+                const isBand = n.group === 'band'
+                const [bg, border] = genreColors(n.genre || 'default')
+                const memberCount = n.artists_count || 0
 
-            data.nodes.forEach(function(n) {
-                if (n.group === 'band') {
-                    nodeColors[n.id] = bandColor.border
-                    n.color = { background: bandColor.bg, border: bandColor.border }
-                    n.borderWidth = 3
+                n.color = {
+                    background: bg,
+                    border: border,
+                    highlight: { background: border, border: '#ffffff' },
+                    hover: { background: bg, border: '#ffffff' },
+                }
+
+                if (isBand) {
+                    // Size based on member count (12px to 28px radius)
+                    const baseSize = 12
+                    const sizeBoost = Math.min(memberCount * 3, 16)
+                    n.borderWidth = 2
                     n.borderWidthSelected = 3
-                    n.shapeProperties = { borderRadius: 0 }
-                    n.widthConstraint = { minimum: 110, maximum: 200 }
+                    n.size = baseSize + sizeBoost
+                    n.shapeProperties = { borderRadius: 4 }
+                    n.widthConstraint = { minimum: 100, maximum: 200 }
                     n.font = {
-                        color: '#e0e0e8',
-                        size: 14,
-                        face: 'Inter, system-ui, sans-serif',
+                        color: '#e8e8f0',
+                        size: Math.min(12 + memberCount, 18),
+                        face: "'JetBrains Mono', 'Inter', system-ui, sans-serif",
                         bold: true,
                         multi: 'html',
                         strokeWidth: 0,
                     }
-                    n.label = '<b>' + n.label + '</b>\n' + (n.genreName || '')
-                    n.margin = { top: 12, bottom: 10, left: 14, right: 14 }
+                    n.label = '<b>' + n.label + '</b>'
+                    n.margin = { top: 10, bottom: 8, left: 12, right: 12 }
+                    n.mass = 1 + memberCount * 0.5
+                    n.shadow = {
+                        enabled: true,
+                        color: border + '40',
+                        size: 8,
+                        x: 0,
+                        y: 0,
+                    }
                 } else {
-                    n.color = { background: artistColor.bg, border: artistColor.border }
-                    nodeColors[n.id] = artistColor.border
                     n.shape = 'dot'
-                    n.size = 22
-                    n.borderWidth = 3
+                    n.size = 16
+                    n.borderWidth = 2
+                    n.borderWidthSelected = 3
                     n.font = {
-                        color: '#c0c0c8',
+                        color: '#b0b0c0',
                         size: 11,
-                        face: 'Inter, system-ui, sans-serif',
+                        face: "'Inter', system-ui, sans-serif",
                         bold: true,
                         strokeWidth: 0,
                     }
+                    n.mass = 0.5
+                    n.shadow = {
+                        enabled: true,
+                        color: border + '30',
+                        size: 4,
+                        x: 0,
+                        y: 0,
+                    }
                 }
                 n.cursor = 'pointer'
-                n.shadow = { enabled: true, size: 0 }
             })
 
-            data.edges.forEach(function(e) {
-                var fromColor = nodeColors[e.from] || '#6b7280'
-                e.color = { color: fromColor, highlight: fromColor, hover: fromColor, opacity: 0.6 }
-                e.width = 2
-                e.hoverWidth = 3
-                e.selectionWidth = 3
-                e.font = { size: 0, strokeWidth: 0 }
-                if (e.dashes) {
-                    e.dashes = [5, 4]
-                    e.width = 1.2
-                    e.color = { color: '#6b7280', highlight: '#9ca3af', hover: '#9ca3af', opacity: 0.4 }
+            // Enhanced edges
+            data.edges.forEach(e => {
+                const isMembership = !!e.dashes
+                if (isMembership) {
+                    e.dashes = [4, 5]
+                    e.width = 1
+                    e.color = {
+                        color: '#444466',
+                        highlight: '#8888aa',
+                        hover: '#8888aa',
+                        opacity: 0.35,
+                    }
+                    e.smooth = { type: 'curvedCW', roundness: 0.2 }
+                } else {
+                    e.width = 2.5
+                    e.color = {
+                        color: '#f59e0b',
+                        highlight: '#fbbf24',
+                        hover: '#fbbf24',
+                        opacity: 0.7,
+                    }
+                    e.smooth = { type: 'curvedCW', roundness: 0.1 }
                 }
-                e.smooth = { type: 'curvedCW', roundness: 0.12 }
+                e.hoverWidth = 0
             })
 
-            var nodes = new DataSet(data.nodes)
-            var edges = new DataSet(data.edges)
+            const nodes = new DataSet(data.nodes)
+            const edges = new DataSet(data.edges)
 
-            var network = new Network(container, { nodes: nodes, edges: edges }, {
+            const network = new Network(container, { nodes, edges }, {
                 nodes: {
-                    borderWidth: 3,
+                    borderWidth: 2,
                     borderWidthSelected: 3,
-                    shapeProperties: { borderRadius: 8 },
+                    shapeProperties: { borderRadius: 6 },
                 },
                 edges: {
-                    smooth: { type: 'curvedCW', roundness: 0.12 },
+                    smooth: { type: 'curvedCW', roundness: 0.15 },
                     font: { size: 0, strokeWidth: 0 },
                 },
                 physics: {
-                    solver: 'hierarchicalRepulsion',
-                    hierarchicalRepulsion: { nodeDistance: 160, centralGravity: 0.1, springLength: 180, springConstant: 0.01, damping: 0.2 },
-                    minVelocity: 0.5,
-                    stabilization: { iterations: 150 },
-                },
-                layout: {
-                    hierarchical: {
-                        enabled: true,
-                        direction: 'LR',
-                        sortMethod: 'directed',
-                        nodeSpacing: 180,
-                        treeSpacing: 240,
-                        blockShifting: true,
-                        edgeMinimization: true,
-                        parentCentralization: true,
+                    solver: 'forceAtlas2Based',
+                    forceAtlas2Based: {
+                        gravitationalConstant: -120,
+                        centralGravity: 0.008,
+                        springLength: 140,
+                        springConstant: 0.04,
+                        damping: 0.35,
+                        avoidOverlap: 0.6,
                     },
+                    minVelocity: 0.2,
+                    maxVelocity: 8,
+                    stabilization: { iterations: 180, updateInterval: 10 },
                 },
+                layout: { improvedLayout: true },
                 interaction: {
                     hover: true,
-                    tooltipDelay: 200,
+                    tooltipDelay: 100,
                     zoomView: true,
                     dragView: true,
-                    hoverConnectedEdges: false,
+                    hoverConnectedEdges: true,
                     navigationButtons: false,
                     keyboard: true,
+                    multiselect: true,
                 },
             })
 
-            status.textContent = data.nodes.length + ' nodes, ' + data.edges.length + ' connections'
+            status.textContent = data.nodes.length + ' nodes · ' + data.edges.length + ' edges'
 
-            network.on('doubleClick', function(params) {
+            // Click to focus
+            network.on('click', params => {
                 if (params.nodes.length) {
-                    var n = nodes.get(params.nodes[0])
+                    network.focus(params.nodes[0], {
+                        scale: 2.5,
+                        animation: { duration: 500, easingFunction: 'easeInOutCubic' },
+                    })
+                } else if (params.edges.length) {
+                    network.fit({ animation: { duration: 400, easingFunction: 'easeInOutCubic' } })
+                } else {
+                    network.fit({ animation: { duration: 600, easingFunction: 'easeInOutCubic' } })
+                }
+            })
+
+            // Double click to navigate
+            network.on('doubleClick', params => {
+                if (params.nodes.length) {
+                    const n = nodes.get(params.nodes[0])
                     if (n.url) window.location.href = n.url
                 }
             })
 
-            network.on('click', function(params) {
-                if (params.nodes.length) {
-                    network.focus(params.nodes[0], { scale: 2.0, animation: true })
-                } else {
-                    network.fit({ animation: true })
+            // Hover glow effect
+            network.on('hoverNode', params => {
+                const id = params.node
+                if (id) {
+                    const n = nodes.get(id)
+                    if (n) {
+                        nodes.update({ id, shadow: { enabled: true, color: '#ffffff', size: 20, x: 0, y: 0 } })
+                    }
+                }
+            })
+            network.on('blurNode', params => {
+                const id = params.node
+                if (id) {
+                    const n = nodes.get(id)
+                    if (n) {
+                        const [bg, border] = genreColors(n.genre || 'default')
+                        nodes.update({ id, shadow: { enabled: true, color: border + '40', size: 8, x: 0, y: 0 } })
+                    }
                 }
             })
 
-            network.once('stabilizationIterationsDone', function() {
-                network.fit({ animation: { duration: 400, easingFunction: 'easeInOutQuad' } })
-                network.setOptions({ physics: false })
+            // Keep subtle physics running for motion
+            network.once('stabilizationIterationsDone', () => {
+                network.fit({ animation: { duration: 800, easingFunction: 'easeInOutCubic' } })
+                // Light continuous physics for subtle motion
+                network.setOptions({
+                    physics: {
+                        solver: 'forceAtlas2Based',
+                        forceAtlas2Based: {
+                            gravitationalConstant: -20,
+                            centralGravity: 0.003,
+                            springLength: 180,
+                            springConstant: 0.02,
+                            damping: 0.6,
+                            avoidOverlap: 0.8,
+                        },
+                        minVelocity: 0.05,
+                        maxVelocity: 2,
+                        stabilization: { iterations: 50 },
+                    },
+                })
             })
 
             // Zoom controls
-            document.getElementById('graph-zoom-in').addEventListener('click', function() {
-                var scale = network.getScale()
-                network.moveTo({ scale: scale * 1.3, animation: { duration: 200, easingFunction: 'easeInOutQuad' } })
-            })
-            document.getElementById('graph-zoom-out').addEventListener('click', function() {
-                var scale = network.getScale()
-                network.moveTo({ scale: scale / 1.3, animation: { duration: 200, easingFunction: 'easeInOutQuad' } })
+            const zoomIn = document.getElementById('graph-zoom-in')
+            const zoomOut = document.getElementById('graph-zoom-out')
+            if (zoomIn) {
+                zoomIn.addEventListener('click', () => {
+                    network.moveTo({
+                        scale: network.getScale() * 1.4,
+                        animation: { duration: 300, easingFunction: 'easeInOutCubic' },
+                    })
+                })
+            }
+            if (zoomOut) {
+                zoomOut.addEventListener('click', () => {
+                    network.moveTo({
+                        scale: network.getScale() / 1.4,
+                        animation: { duration: 300, easingFunction: 'easeInOutCubic' },
+                    })
+                })
+            }
+
+            // Keyboard: F for fit, R for reset physics
+            document.addEventListener('keydown', e => {
+                if (e.key === 'f' && !e.ctrlKey && !e.metaKey && !e.target.closest('input')) {
+                    network.fit({ animation: { duration: 500, easingFunction: 'easeInOutCubic' } })
+                }
+                if (e.key === 'r' && !e.ctrlKey && !e.metaKey && !e.target.closest('input')) {
+                    network.setOptions({
+                        physics: {
+                            solver: 'forceAtlas2Based',
+                            forceAtlas2Based: {
+                                gravitationalConstant: -120,
+                                centralGravity: 0.008,
+                                springLength: 140,
+                                springConstant: 0.04,
+                                damping: 0.35,
+                                avoidOverlap: 0.6,
+                            },
+                            minVelocity: 0.2,
+                            maxVelocity: 8,
+                            stabilization: { iterations: 150 },
+                        },
+                    })
+                    network.once('stabilizationIterationsDone', () => {
+                        network.setOptions({
+                            physics: {
+                                solver: 'forceAtlas2Based',
+                                forceAtlas2Based: {
+                                    gravitationalConstant: -20,
+                                    centralGravity: 0.003,
+                                    springLength: 180,
+                                    springConstant: 0.02,
+                                    damping: 0.6,
+                                    avoidOverlap: 0.8,
+                                },
+                                minVelocity: 0.05,
+                                maxVelocity: 2,
+                            },
+                        })
+                    })
+                }
             })
         })
-        .catch(function(err) {
+        .catch(err => {
             status.textContent = 'Error: ' + err.message
             console.error(err)
         })
