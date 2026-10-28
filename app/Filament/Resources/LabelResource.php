@@ -58,7 +58,7 @@ class LabelResource extends Resource
                     ]),
                 Section::make('Media')
                     ->schema([
-                        FileUpload::make('logo')->image()->maxSize(5120)->mimeTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('labels')->label('Label Logo'),
+                        FileUpload::make('logo')->image()->maxSize(5120)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('labels')->label('Label Logo'),
                         RichEditor::make('description'),
                     ]),
             ]);
@@ -72,8 +72,8 @@ class LabelResource extends Resource
                 ImageColumn::make('logo')->circular()->size(40)->defaultImageUrl(asset('img/placeholder-label.svg')),
                 TextColumn::make('country')->sortable(),
                 TextColumn::make('founded_year')->sortable(),
-                TextColumn::make('bands_count')->counts('bands')->sortable()->label('Bands'),
-                TextColumn::make('created_at')->dateTime('Y-m-d')->sortable()->toggleable(),
+                TextColumn::make('bands_count')->counts('bands')->sortable()->label('Bands')->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')->dateTime('Y-m-d')->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 TrashedFilter::make(),

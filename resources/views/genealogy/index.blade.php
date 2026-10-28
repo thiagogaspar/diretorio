@@ -39,8 +39,10 @@ $seo = new \App\Values\SeoData(
         top: 24px;
         left: 24px;
         background: rgba(6, 6, 13, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 10px;
+        border-radius: 12px;
         padding: 16px 20px;
         min-width: 180px;
     }
@@ -121,6 +123,37 @@ $seo = new \App\Values\SeoData(
         color: rgba(255, 255, 255, 0.2);
         font-family: 'Inter', system-ui, sans-serif;
     }
+
+    @media (max-width: 640px) {
+        .graph-legend {
+            top: 12px;
+            left: 12px;
+            padding: 10px 12px;
+            min-width: auto;
+            max-width: calc(100vw - 24px);
+        }
+        .graph-legend-item {
+            font-size: 9px;
+            gap: 6px;
+        }
+        .graph-hint {
+            display: none;
+        }
+        .graph-zoom {
+            bottom: 12px;
+            left: 12px;
+        }
+        .graph-zoom-btn {
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+        }
+        .graph-status {
+            bottom: 12px;
+            right: 12px;
+            font-size: 8px;
+        }
+    }
 </style>
 @endsection
 
@@ -130,11 +163,12 @@ $seo = new \App\Values\SeoData(
 <div id="full-genealogy-graph">
     <div class="flex items-center justify-center h-full">
         <div class="text-center">
-            <svg class="w-8 h-8 animate-spin mx-auto mb-3 text-white/20" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-            </svg>
-            <p class="text-white/15 text-xs font-mono">{{ __('common.genealogy.fetching') }}</p>
+            <div class="space-y-3">
+                <div class="skeleton w-12 h-12 rounded-full mx-auto"></div>
+                <div class="skeleton w-32 h-3 mx-auto"></div>
+                <div class="skeleton w-24 h-2 mx-auto"></div>
+            </div>
+            <p class="text-white/15 text-xs font-mono mt-6">{{ __('common.genealogy.fetching') }}</p>
         </div>
     </div>
 </div>

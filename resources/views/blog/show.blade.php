@@ -36,7 +36,7 @@ $seo = new \App\Values\SeoData(
 
 <article class="max-w-3xl mx-auto">
     @if($post->featured_image)
-    <section class="relative -mx-4 mb-8 overflow-hidden bg-black" style="aspect-ratio:16/4; max-height:45vh;">
+    <section class="relative -mx-4 mb-8 overflow-hidden bg-gradient-to-br from-brand-900 via-brand-800 to-ink rounded-2xl" style="aspect-ratio:16/4; max-height:45vh;">
         <img src="{{ img_url($post->featured_image) }}" alt="{{ $post->title }}" width="1920" height="480" class="absolute inset-0 w-full h-full object-cover opacity-40" fetchpriority="high" decoding="sync" sizes="100vw">
         <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20"></div>
         <div class="relative z-10 flex flex-col justify-end h-full">
@@ -49,18 +49,16 @@ $seo = new \App\Values\SeoData(
     <h1 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-black dark:text-white leading-tight tracking-tight mb-4">{{ $post->title }}</h1>
     @endif
 
-    <div class="flex items-center gap-2 mb-4 font-display text-sm font-bold text-surface-600 dark:text-ink-400 uppercase tracking-wider flex-wrap">
-        <span>{{ $post->published_at->format('M j, Y') }}</span>
-        <span class="mx-1">/</span>
-        <span>{{ $post->author ?? config('app.name') }}</span>
-        <span class="mx-1">/</span>
+    <div class="flex items-center gap-2 mb-6 flex-wrap">
+        <span class="badge badge-surface">{{ $post->published_at->format('M j, Y') }}</span>
+        <span class="badge badge-surface">{{ $post->author ?? config('app.name') }}</span>
         <x-reading-time :content="$post->body" />
     </div>
 
     <x-byline name="{{ $post->author ?? config('app.name') }}" avatar="{{ $post->author_avatar ?? '' }}" bio="{{ $post->author_bio ?? '' }}" />
 
     <div class="border-t-4 border-black dark:border-white pt-8">
-        <div class="prose max-w-none drop-cap">{!! \Stevebauman\Purify\Facades\Purify::clean($post->body) !!}</div>
+        <div class="prose-serif max-w-none drop-cap">{!! \Stevebauman\Purify\Facades\Purify::clean($post->body) !!}</div>
     </div>
 
     <div class="mt-8">

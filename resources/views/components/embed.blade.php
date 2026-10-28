@@ -6,6 +6,6 @@ $attrs = match(true) {
     default => ['src' => $url, 'title' => $title ?? 'Embedded content'],
 };
 @endphp
-<div class="embed-container">
-    <iframe src="{{ $attrs['src'] }}" title="{{ $attrs['title'] }}" loading="lazy" allowfullscreen allow="encrypted-media *"></iframe>
+<div class="embed-container relative w-full aspect-video overflow-hidden">
+    <iframe src="{{ $attrs['src'] }}" title="{{ $attrs['title'] }}" loading="lazy" allowfullscreen allow="encrypted-media *" class="absolute inset-0 w-full h-full"></iframe>
 </div>

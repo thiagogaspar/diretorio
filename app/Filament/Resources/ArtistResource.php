@@ -52,8 +52,10 @@ class ArtistResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema
+            ->columns(4)
             ->components([
                 Section::make('Basic Info')
+                    ->columnSpan(3)
                     ->columns(2)
                     ->schema([
                         TextInput::make('name')
@@ -63,27 +65,29 @@ class ArtistResource extends Resource
                         TextInput::make('slug')->required()->unique(ignoreRecord: true),
                         RichEditor::make('bio')->columnSpanFull(),
                     ]),
+
                 Section::make('Images')
-                    ->columns(3)
+                    ->columnSpan(1)
                     ->collapsible()
                     ->schema([
-                        FileUpload::make('hero_image')->image()->maxSize(5120)->mimeTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('artists/hero')->label('Hero Banner'),
-                        FileUpload::make('photo')->image()->maxSize(5120)->mimeTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('artists')->label('Thumbnail'),
-                        FileUpload::make('gallery')->multiple()->image()->maxSize(5120)->mimeTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('artists/gallery')->label('Gallery'),
+                        FileUpload::make('hero_image')->image()->maxSize(5120)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('artists/hero')->label('Hero Banner'),
+                        FileUpload::make('photo')->image()->maxSize(5120)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('artists')->label('Thumbnail'),
+                        FileUpload::make('gallery')->multiple()->image()->maxSize(5120)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('artists/gallery')->label('Gallery'),
                     ]),
+
                 Section::make('Details')
+                    ->columnSpan(2)
                     ->columns(3)
                     ->schema([
                         DatePicker::make('birth_date'),
                         DatePicker::make('death_date'),
                         TextInput::make('origin'),
                     ]),
-                Section::make('Classification')
+
+                Section::make('Classification & Status')
+                    ->columnSpan(2)
                     ->schema([
-                        Select::make('tags')->multiple()->relationship('tags', 'name', fn ($q) => $q->where('is_approved', true))->searchable()->preload(),
-                    ]),
-                Section::make('Status')
-                    ->schema([
+                        Select::make('tags')->multiple()->relationship('tags', 'name', fn ($query) => $query->where('is_approved', true))->searchable()->preload(),
                         Toggle::make('is_active')->default(true),
                     ]),
             ]);
@@ -100,9 +104,9 @@ class ArtistResource extends Resource
                 TextColumn::make('name')->searchable()->sortable()->weight('bold'),
                 ImageColumn::make('photo')->circular()->size(40)->defaultImageUrl(asset('img/placeholder-artist.svg')),
                 TextColumn::make('origin')->searchable()->sortable(),
-                TextColumn::make('bands')->counts('bands')->sortable()->label('Bands')->toggleable(),
-                IconColumn::make('is_active')->boolean()->toggleable(),
-                TextColumn::make('created_at')->dateTime('Y-m-d')->sortable()->toggleable(),
+                TextColumn::make('bands')->counts('bands')->sortable()->label('Bands')->toggleable(isToggledHiddenByDefault: true),
+                IconColumn::make('is_active')->boolean()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')->dateTime('Y-m-d')->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 TrashedFilter::make(),

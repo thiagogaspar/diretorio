@@ -20,24 +20,26 @@
     </p>
 </div>
 @else
-<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
     @forelse($favorites as $fav)
     @php $item = $fav->favoriteable; @endphp
     @if($item)
     <a href="{{ $fav->favoriteable_type === 'App\Models\Band' ? route('bands.show', $item) : route('artists.show', $item) }}" class="block group">
-        <div class="card card-hover h-full bg-white dark:bg-ink-800 p-3 flex gap-2.5">
+        <div class="card overflow-hidden h-full">
             @if(method_exists($item, 'getAttribute') && $item->photo)
-            <img src="{{ img_url($item->photo) }}" alt="{{ $item->name }}" width="48" height="48" class="w-12 h-12 object-cover shrink-0 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
+            <div class="aspect-[3/2] overflow-hidden bg-surface-100 dark:bg-ink-900">
+                <img src="{{ img_url($item->photo) }}" alt="{{ $item->name }}" width="400" height="267" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+            </div>
             @endif
-            <div class="min-w-0 flex-1">
-                <h3 class="font-display font-bold text-xs text-brand-600 dark:text-brand-400 truncate">{{ $item->name }}</h3>
+            <div class="p-3">
+                <h3 class="font-display font-bold text-xs text-surface-900 dark:text-ink-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 truncate">{{ $item->name }}</h3>
                 <p class="text-[10px] text-surface-400 mt-1.5 uppercase tracking-wider">{{ class_basename($fav->favoriteable_type) }}</p>
             </div>
         </div>
     </a>
     @endif
     @empty
-    <div class="col-span-full text-center py-16">
+    <div class="col-span-full card p-8 text-center">
         <p class="text-surface-500 mb-4 text-sm">{{ __('common.favorites.no_favorites') }}</p>
         <a href="{{ route('bands.index') }}" class="btn btn-brand btn-sm">{{ __('common.favorites.browse_bands') }}</a>
     </div>

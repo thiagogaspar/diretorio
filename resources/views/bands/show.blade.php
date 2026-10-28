@@ -45,19 +45,16 @@ $seo = new \App\Values\SeoData(
 
 @section('content')
 <div class="max-w-6xl mx-auto px-4">
-<!-- Hero — foto sem shapes -->
-<section class="relative -mx-4 -mt-6 mb-8 overflow-hidden bg-black" style="aspect-ratio:16/4; max-height:45vh;">
+<!-- Hero — gradient bg -->
+<section class="relative bg-gradient-to-br from-brand-900 via-brand-800 to-ink -mx-4 -mt-6 mb-10 overflow-hidden" style="min-height:35vh;">
     @if($heroPlaceholder)
-    <img src="{{ $heroPlaceholder }}" alt="{{ $band->name }}" width="1920" height="480" class="absolute inset-0 w-full h-full object-cover opacity-30" fetchpriority="high" decoding="sync" sizes="100vw">
+    <img src="{{ $heroPlaceholder }}" alt="{{ $band->name }}" width="1920" height="480" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" fetchpriority="high" decoding="sync" sizes="100vw">
     @endif
-    <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20"></div>
-    <div class="relative z-10 flex flex-col justify-end h-full">
-        <div class="max-w-6xl mx-auto px-4 w-full pb-8 sm:pb-12 pt-6">
-            <h1 class="font-display text-3xl sm:text-5xl md:text-6xl font-black text-white leading-none tracking-tight">{{ $band->name }}</h1>
-            <div class="flex flex-wrap gap-2 mt-3">
-                @if($band->formed_year)<span class="badge badge-hero">{{ $band->formed_year }}&ndash;{{ $band->dissolved_year ?? __('common.bands.present') }}</span>@endif
-                @foreach($band->genres->take(3) as $genre)<span class="badge badge-hero text-white/50 border-white/15">{{ $genre->name }}</span>@endforeach
-            </div>
+    <div class="relative z-10 max-w-6xl mx-auto px-4 w-full py-16 sm:py-20">
+        <h1 class="font-display text-3xl sm:text-5xl md:text-6xl font-black text-white leading-none tracking-tight">{{ $band->name }}</h1>
+        <div class="flex flex-wrap gap-2 mt-4">
+            @if($band->formed_year)<span class="badge badge-hero">{{ $band->formed_year }}&ndash;{{ $band->dissolved_year ?? __('common.bands.present') }}</span>@endif
+            @foreach($band->genres->take(3) as $genre)<span class="badge badge-hero">{{ $genre->name }}</span>@endforeach
         </div>
     </div>
 </section>
@@ -142,22 +139,22 @@ $seo = new \App\Values\SeoData(
         <!-- Discography -->
         @if($band->albums->count())
         <x-section-header tag="h2" :count="$band->albums->count()" class="mt-10">{{ __('common.bands.discography') }}</x-section-header>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             @foreach($band->albums as $album)
-            <a href="{{ route('albums.show', $album) }}" class="group">
-                <div class="border-2 border-surface-200 dark:border-ink-700 bg-white dark:bg-ink-800 hover:border-brand-500 dark:hover:border-brand-400 transition-colors">
+            <a href="{{ route('albums.show', $album) }}" class="card overflow-hidden group">
+                <div class="aspect-square overflow-hidden bg-surface-100 dark:bg-ink-900">
                     @php $cover = $album->cover_art ? img_url($album->cover_art) : null; @endphp
                     @if($cover)
-                    <img src="{{ $cover }}" alt="{{ $album->title }}" width="400" height="400" class="w-full aspect-square object-cover" loading="lazy">
+                    <img src="{{ $cover }}" alt="{{ $album->title }}" width="400" height="400" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
                     @else
-                    <div class="w-full aspect-square bg-surface-100 dark:bg-ink-900 flex items-center justify-center text-surface-300 dark:text-ink-400">
+                    <div class="w-full h-full flex items-center justify-center text-surface-300 dark:text-ink-400">
                         <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="1.5" d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
                     </div>
                     @endif
                 </div>
-                <div class="mt-2">
+                <div class="p-3">
                     <h3 class="font-display text-sm font-bold text-surface-900 dark:text-ink-100 truncate group-hover:text-brand-600 dark:group-hover:text-brand-400">{{ $album->title }}</h3>
-                    @if($album->release_year)<p class="font-display text-[10px] font-bold text-surface-400 dark:text-ink-400">{{ $album->release_year }}</p>@endif
+                    @if($album->release_year)<p class="font-display text-[10px] font-bold text-surface-400 dark:text-ink-400 mt-0.5">{{ $album->release_year }}</p>@endif
                 </div>
             </a>
             @endforeach
@@ -167,7 +164,7 @@ $seo = new \App\Values\SeoData(
         <!-- Connection Graph -->
         @if(count($graph['nodes']) > 1)
         <x-section-header tag="h2" class="mt-10">{{ __('common.bands.connections') }}</x-section-header>
-        <div class="border-2 border-surface-200 dark:border-ink-700 bg-surface-50 dark:bg-ink-800 overflow-hidden" style="height:350px">
+        <div class="rounded-xl overflow-hidden shadow-sm border border-surface-200 dark:border-ink-700 bg-surface-50 dark:bg-ink-800" style="height:350px">
             <x-genealogy-graph :graph="$graph" containerId="band-graph" />
         </div>
         @endif

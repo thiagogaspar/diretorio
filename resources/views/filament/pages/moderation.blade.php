@@ -7,8 +7,8 @@
                 <div class="p-3 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700">
                     <p class="text-sm"><strong>{{ $comment->user?->name ?? 'Anonymous' }}</strong> on {{ class_basename($comment->commentable_type) }} #{{ $comment->commentable_id }}</p>
                     <p class="text-xs text-surface-500 mt-1">{{ Str::limit($comment->body, 100) }}</p>
-                    <div class="flex gap-2 mt-2">
-                        <a href="{{ url('/admin/comments/' . $comment->id . '/edit') }}" class="text-xs text-brand-600 hover:underline">Review</a>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <a href="{{ url('/admin/comments/' . $comment->id . '/edit') }}" class="text-xs sm:text-sm text-brand-600 hover:underline py-1">Review</a>
                     </div>
                 </div>
                 @empty

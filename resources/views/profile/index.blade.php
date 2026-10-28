@@ -16,9 +16,9 @@ $seo = new \App\Values\SeoData(title: __('common.profile.title'), description: _
 
 <div class="lg:flex lg:gap-8">
     <div class="lg:w-72 shrink-0">
-        <div class="card bg-white dark:bg-ink-800 p-5">
+        <div class="card p-5 rounded-2xl">
             <div class="flex items-center gap-4">
-                <div class="w-16 h-16 bg-brand-500 flex items-center justify-center text-white font-display text-2xl font-bold shrink-0 border-2 border-brand-700">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-display text-2xl font-bold shrink-0">
                     {{ strtoupper($user->name[0] ?? '?') }}
                 </div>
                 <div>
@@ -48,16 +48,18 @@ $seo = new \App\Values\SeoData(title: __('common.profile.title'), description: _
         <section class="mb-10">
             <h2 class="font-display text-xl font-bold mb-4 text-surface-900 dark:text-ink-200">{{ __('common.profile.favorites') }}</h2>
             @if($user->favorites->isNotEmpty())
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 @foreach($user->favorites as $fav)
                 @php $item = $fav->favoriteable; @endphp
                 @if($item)
                 <a href="{{ $fav->favoriteable_type === 'App\Models\Band' ? route('bands.show', $item) : route('artists.show', $item) }}" class="block group">
-                    <div class="card card-hover h-full bg-white dark:bg-ink-800 p-3 flex gap-2.5">
+                    <div class="card overflow-hidden h-full">
                         @if(method_exists($item, 'getAttribute') && $item->photo)
-                        <img src="{{ img_url($item->photo) }}" alt="{{ $item->name }}" width="40" height="40" class="w-10 h-10 object-cover shrink-0 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
+                        <div class="aspect-[3/2] overflow-hidden bg-surface-100 dark:bg-ink-900">
+                            <img src="{{ img_url($item->photo) }}" alt="{{ $item->name }}" width="400" height="267" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                        </div>
                         @endif
-                        <div class="min-w-0 flex-1">
+                        <div class="p-3">
                             <h3 class="font-display font-bold text-xs text-brand-600 dark:text-brand-400 truncate">{{ $item->name }}</h3>
                             <p class="text-[10px] text-surface-400 mt-1 uppercase tracking-wider">{{ class_basename($fav->favoriteable_type) }}</p>
                         </div>
@@ -77,9 +79,9 @@ $seo = new \App\Values\SeoData(title: __('common.profile.title'), description: _
             @if($suggestions->isEmpty())
             <p class="text-sm text-surface-500">{{ __('common.profile.no_suggestions') }}</p>
             @else
-            <div class="border border-surface-200 dark:border-ink-700 divide-y divide-surface-200 dark:divide-ink-700 bg-white dark:bg-ink-800">
+            <div class="card overflow-hidden divide-y divide-surface-200 dark:divide-ink-700">
                 @foreach($suggestions as $s)
-                <div class="px-4 py-3 flex items-center justify-between gap-3">
+                <div class="px-4 py-3 flex items-center justify-between gap-3 hover:bg-surface-50 dark:hover:bg-ink-700/50 transition-colors">
                     <div class="min-w-0 flex-1">
                         <p class="text-sm text-surface-700 dark:text-ink-200 truncate">
                             <span class="font-medium">{{ $s->field }}</span>
@@ -103,9 +105,9 @@ $seo = new \App\Values\SeoData(title: __('common.profile.title'), description: _
             @if($user->comments->isEmpty())
             <p class="text-sm text-surface-500">{{ __('common.profile.no_comments') }}</p>
             @else
-            <div class="border border-surface-200 dark:border-ink-700 divide-y divide-surface-200 dark:divide-ink-700 bg-white dark:bg-ink-800">
+            <div class="card overflow-hidden divide-y divide-surface-200 dark:divide-ink-700">
                 @foreach($user->comments as $c)
-                <div class="px-4 py-3">
+                <div class="px-4 py-3 hover:bg-surface-50 dark:hover:bg-ink-700/50 transition-colors">
                     <div class="flex items-start justify-between gap-3">
                         <div class="min-w-0 flex-1">
                             <p class="text-sm text-surface-700 dark:text-ink-200">{{ Str::limit($c->body, 120) }}</p>

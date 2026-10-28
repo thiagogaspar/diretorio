@@ -100,7 +100,7 @@ class MainRoutesTest extends TestCase
     public function test_favorites_page_redirects_guest(): void
     {
         $response = $this->get('/favorites');
-        $response->assertStatus(200);
+        $response->assertRedirect('/login');
     }
 
     public function test_sitemap(): void

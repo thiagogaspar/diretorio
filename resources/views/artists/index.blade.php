@@ -20,59 +20,63 @@ $seo = new \App\Values\SeoData(
     <span class="h-px flex-1 bg-surface-200 dark:bg-ink-700"></span>
 </div>
 
-<!-- Search -->
-<form method="GET" class="mb-4">
-    <input name="search" value="{{ request('search') }}" placeholder="{{ __('common.artists.search') }}" aria-label="{{ __('common.artists.search_aria') }}" class="input" style="max-width:280px">
-</form>
-
-<!-- Sort + count -->
-<div class="flex items-center justify-between mb-4 font-display text-xs text-surface-500">
-    <span class="font-bold uppercase tracking-wider">{{ trans_choice('common.artists.count', $artists->total()) }}</span>
-    <div class="flex gap-3">
-        <a href="?sort=name&dir={{ $sort === 'name' && $dir === 'asc' ? 'desc' : 'asc' }}&{{ $qs }}" class="hover:text-brand-600 {{ $sort === 'name' ? 'font-bold text-brand-600 dark:text-brand-400' : '' }}">
+<!-- Search + Sort -->
+<div class="p-4 bg-surface-50 dark:bg-ink-800/50 rounded-xl flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+    <form method="GET" class="flex-1">
+        <input name="search" value="{{ request('search') }}" placeholder="{{ __('common.artists.search') }}" aria-label="{{ __('common.artists.search_aria') }}" class="w-full sm:max-w-[280px] input">
+    </form>
+    <div class="flex flex-wrap gap-2 font-display text-xs text-surface-500">
+        <a href="?sort=name&dir={{ $sort === 'name' && $dir === 'asc' ? 'desc' : 'asc' }}&{{ $qs }}" class="px-3 py-1 rounded-full border border-surface-200 dark:border-ink-700 hover:border-accent-500 hover:text-accent-600 dark:hover:border-accent-700 dark:hover:text-accent-400 transition-colors {{ $sort === 'name' ? 'font-bold text-accent-600 dark:text-accent-400 border-accent-400 dark:border-accent-600' : 'text-surface-500' }}">
             {{ __('common.artists.sort_name') }} {{ $sort === 'name' ? ($dir === 'asc' ? '&uarr;' : '&darr;') : '' }}
         </a>
-        <a href="?sort=origin&dir={{ $sort === 'origin' && $dir === 'asc' ? 'desc' : 'asc' }}&{{ $qs }}" class="hover:text-brand-600 {{ $sort === 'origin' ? 'font-bold text-brand-600 dark:text-brand-400' : '' }}">
+        <a href="?sort=origin&dir={{ $sort === 'origin' && $dir === 'asc' ? 'desc' : 'asc' }}&{{ $qs }}" class="px-3 py-1 rounded-full border border-surface-200 dark:border-ink-700 hover:border-accent-500 hover:text-accent-600 dark:hover:border-accent-700 dark:hover:text-accent-400 transition-colors {{ $sort === 'origin' ? 'font-bold text-accent-600 dark:text-accent-400 border-accent-400 dark:border-accent-600' : 'text-surface-500' }}">
             {{ __('common.artists.sort_origin') }} {{ $sort === 'origin' ? ($dir === 'asc' ? '&uarr;' : '&darr;') : '' }}
         </a>
     </div>
 </div>
 
-<!-- Newspaper list -->
+<div class="flex items-center justify-between mb-4 font-display text-xs text-surface-500">
+    <span class="font-bold uppercase tracking-wider">{{ trans_choice('common.artists.count', $artists->total()) }}</span>
+</div>
+
+<!-- Card grid -->
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
 @forelse($artists as $artist)
-    <a href="{{ route('artists.show', $artist) }}" class="flex items-start gap-4 py-3 px-3 -mx-3 border-b-2 border-surface-200 dark:border-ink-700 hover:bg-surface-100 dark:hover:bg-ink-800/50 transition-colors group">
-        @if($artist->photo)
-        <img src="{{ img_url($artist->photo) }}" alt="{{ $artist->name }}" width="56" height="80" class="w-14 h-20 object-cover shrink-0 mt-0.5 border-2 border-surface-200 dark:border-ink-600" loading="lazy">
-        @else
-        <div class="w-14 h-20 shrink-0 mt-0.5 border-2 border-surface-200 dark:border-ink-600 bg-accent-100 dark:bg-accent-900/30 flex items-center justify-center">
-            <svg class="w-6 h-6 text-accent-300 dark:text-accent-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+    <a href="{{ route('artists.show', $artist) }}" class="card overflow-hidden group">
+        <div class="aspect-[2/3] overflow-hidden bg-accent-100 dark:bg-accent-900/30">
+            @if($artist->photo)
+            <img src="{{ img_url($artist->photo) }}" alt="{{ $artist->name }}" width="400" height="600" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+            @else
+            <div class="w-full h-full flex items-center justify-center text-accent-300 dark:text-accent-700">
+                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            </div>
+            @endif
         </div>
-        @endif
-        <div class="min-w-0 flex-1">
-            <h2 class="font-display text-base font-bold text-surface-900 dark:text-ink-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 leading-tight">{{ $artist->name }}</h2>
-            <div class="text-xs text-surface-500 dark:text-ink-500 mt-0.5 leading-relaxed">
+        <div class="p-3">
+            <h2 class="font-display text-sm font-bold text-surface-900 dark:text-ink-100 group-hover:text-accent-600 dark:group-hover:text-accent-400 leading-tight truncate">{{ $artist->name }}</h2>
+            <div class="flex flex-wrap gap-1 mt-1.5">
                 @if($artist->origin)
-                <span>{{ $artist->origin }}</span>
+                <span class="badge badge-surface text-[10px]">{{ $artist->origin }}</span>
                 @endif
                 @if($artist->birth_date)
-                <span class="mx-1">&middot;</span><span>{{ $artist->birth_date->format('Y') }}@if($artist->death_date)&ndash;{{ $artist->death_date->format('Y') }}@endif</span>
+                <span class="badge badge-surface text-[10px]">{{ $artist->birth_date->format('Y') }}@if($artist->death_date)&ndash;{{ $artist->death_date->format('Y') }}@endif</span>
                 @endif
             </div>
-            <div class="font-display text-[11px] font-bold text-surface-400 dark:text-ink-400 mt-0.5">
+            <div class="font-display text-[11px] font-bold text-surface-400 dark:text-ink-400 mt-2">
                 <span>{{ trans_choice('common.artists.bands_count', $artist->bands->count()) }}</span>
             </div>
         </div>
-        <span class="text-surface-300 dark:text-ink-400 text-xs mt-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">&rarr;</span>
     </a>
 @empty
-    <div class="text-center py-16 border-2 border-surface-200 dark:border-ink-700">
+    <div class="col-span-full card p-8 text-center">
         <p class="text-surface-500 mb-4">{{ __('common.artists.no_artists') }}</p>
         <a href="/admin/artists/create" class="btn bg-black text-white border-black hover:bg-surface-800">{{ __('common.artists.add_first') }}</a>
     </div>
 @endforelse
+</div>
 
 <!-- Pagination -->
-<div class="mt-6 flex items-center justify-between font-display text-xs text-surface-500">
+<div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-display text-xs text-surface-500">
     <span class="font-bold uppercase tracking-wider">{{ $artists->firstItem() }}&ndash;{{ $artists->lastItem() }} {{ __('common.pagination.of') }} {{ $artists->total() }}</span>
     {{ $artists->appends(request()->query())->links('pagination::tailwind') }}
 </div>

@@ -62,7 +62,7 @@ class BandArtistResource extends Resource
                 TextColumn::make('artist.name')->searchable()->sortable(),
                 TextColumn::make('role')->badge()->sortable(),
                 TextColumn::make('joined_year')->sortable(),
-                TextColumn::make('left_year')->sortable()->placeholder('present'),
+                TextColumn::make('left_year')->sortable()->placeholder('present')->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_current')->boolean()->sortable(),
             ])
             ->defaultSort('band_id', 'asc');

@@ -4,6 +4,8 @@
     <span class="font-display text-xs font-bold text-surface-400 dark:text-ink-400 shrink-0">({{ $count }})</span>
     @endif
     @if(isset($action))
-    {{ $action }}
+    <div class="shrink-0">
+        {{ $action }}
+    </div>
     @endif
 </div>

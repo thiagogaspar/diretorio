@@ -16,10 +16,10 @@
 <div class="text-center py-16 border-2 border-surface-200 dark:border-ink-700"><p class="text-surface-500">{{ __('common.labels.no_labels') }}</p></div>
 @else
 <!-- Alphabet nav -->
-<div class="flex flex-wrap gap-1.5 mb-8" aria-label="{{ __('common.labels.aria_index') }}">
+<div class="flex flex-wrap gap-2 mb-8" aria-label="{{ __('common.labels.aria_index') }}">
     @foreach($alphabet as $letter)
     <a href="#letter-{{ $letter }}"
-       class="w-8 h-8 flex items-center justify-center font-display text-xs font-bold uppercase border-2 border-surface-200 dark:border-ink-700 text-surface-500 dark:text-surface-400 hover:border-brand-500 hover:text-brand-600 dark:hover:border-brand-700 dark:hover:text-brand-400 {{ isset($labels[$letter]) ? '' : 'opacity-40 pointer-events-none' }}">
+       class="w-9 h-9 flex items-center justify-center font-display text-xs font-bold uppercase rounded-full border border-surface-200 dark:border-ink-700 text-surface-500 dark:text-surface-400 hover:border-brand-500 hover:text-brand-600 dark:hover:border-brand-700 dark:hover:text-brand-400 transition-colors {{ isset($labels[$letter]) ? '' : 'opacity-40 pointer-events-none' }}">
         {{ $letter }}
     </a>
     @endforeach

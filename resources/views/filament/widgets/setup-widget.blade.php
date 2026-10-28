@@ -7,11 +7,11 @@
             Done! Bands, artists, albums, labels, and genealogy data have been seeded.
         </div>
     @else
-        <div class="flex items-center gap-4">
-            <p class="text-sm text-gray-600 dark:text-gray-400">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <p class="text-sm text-gray-600 dark:text-gray-400 flex-1">
                 Populate the database with demo bands, artists, albums, labels, and genealogy relationships.
             </p>
-            <x-filament::button wire:click="seed" color="success" icon="heroicon-o-rocket-launch">
+            <x-filament::button wire:click="seed" color="success" icon="heroicon-o-rocket-launch" class="w-full sm:w-auto">
                 Run Seeder
             </x-filament::button>
         </div>

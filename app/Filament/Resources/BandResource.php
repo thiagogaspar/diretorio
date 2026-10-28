@@ -53,8 +53,10 @@ class BandResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema
+            ->columns(4)
             ->components([
                 Section::make('Basic Info')
+                    ->columnSpan(3)
                     ->columns(2)
                     ->schema([
                         TextInput::make('name')
@@ -64,30 +66,32 @@ class BandResource extends Resource
                         TextInput::make('slug')->required()->unique(ignoreRecord: true),
                         RichEditor::make('bio')->columnSpanFull(),
                     ]),
+
                 Section::make('Images')
-                    ->columns(3)
+                    ->columnSpan(1)
                     ->collapsible()
                     ->schema([
-                        FileUpload::make('hero_image')->image()->maxSize(5120)->mimeTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('bands/hero')->label('Hero Banner'),
-                        FileUpload::make('photo')->image()->maxSize(5120)->mimeTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('bands')->label('Thumbnail'),
-                        FileUpload::make('gallery')->multiple()->image()->maxSize(5120)->mimeTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('bands/gallery')->label('Gallery'),
+                        FileUpload::make('hero_image')->image()->maxSize(5120)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('bands/hero')->label('Hero Banner'),
+                        FileUpload::make('photo')->image()->maxSize(5120)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('bands')->label('Thumbnail'),
+                        FileUpload::make('gallery')->multiple()->image()->maxSize(5120)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('bands/gallery')->label('Gallery'),
                     ]),
+
                 Section::make('Classification')
+                    ->columnSpan(2)
                     ->columns(3)
                     ->schema([
                         Select::make('genres')->multiple()->relationship('genres', 'name')->searchable()->preload(),
                         Select::make('label_id')->relationship('label', 'name')->searchable()->preload(),
-                        Select::make('tags')->multiple()->relationship('tags', 'name', fn ($q) => $q->where('is_approved', true))->searchable()->preload(),
+                        Select::make('tags')->multiple()->relationship('tags', 'name', fn ($query) => $query->where('is_approved', true))->searchable()->preload(),
                     ]),
-                Section::make('Timeline')
-                    ->columns(3)
+
+                Section::make('Timeline & Status')
+                    ->columnSpan(2)
+                    ->columns(2)
                     ->schema([
                         TextInput::make('formed_year')->numeric()->placeholder('e.g. 1994'),
                         TextInput::make('dissolved_year')->numeric()->placeholder('e.g. 2007'),
                         TextInput::make('origin'),
-                    ]),
-                Section::make('Status')
-                    ->schema([
                         Toggle::make('is_active')->default(true),
                     ]),
             ]);
@@ -106,10 +110,10 @@ class BandResource extends Resource
                 TextColumn::make('genres.name')->badge()->sortable(),
                 TextColumn::make('label.name')->badge()->color('gray')->sortable(),
                 TextColumn::make('formed_year')->sortable(),
-                TextColumn::make('origin')->searchable()->toggleable(),
-                TextColumn::make('artists_count')->counts('artists')->sortable()->label('Members')->toggleable(),
-                IconColumn::make('is_active')->boolean()->toggleable(),
-                TextColumn::make('created_at')->dateTime('Y-m-d')->sortable()->toggleable(),
+                TextColumn::make('origin')->searchable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('artists_count')->counts('artists')->sortable()->label('Members')->toggleable(isToggledHiddenByDefault: true),
+                IconColumn::make('is_active')->boolean()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')->dateTime('Y-m-d')->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 TrashedFilter::make(),

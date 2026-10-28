@@ -7,9 +7,9 @@
 
 @section('content')
 <div class="max-w-6xl mx-auto px-4">
-<div class="max-w-md mx-auto mt-8 mb-16">
-    <div class="card bg-white dark:bg-ink-800 p-6">
-        <h1 class="font-display text-2xl font-bold text-center mb-6 text-surface-900 dark:text-ink-200">{{ __('common.auth.create_account') }}</h1>
+<div class="max-w-md mx-auto mt-8 mb-16 w-full">
+    <div class="card bg-white dark:bg-ink-800 p-4 sm:p-6">
+        <h1 class="font-display text-xl sm:text-2xl font-bold text-center mb-6 text-surface-900 dark:text-ink-200">{{ __('common.auth.create_account') }}</h1>
         <form method="POST" class="space-y-4">
             @csrf
             <div>

@@ -39,20 +39,18 @@ if (!isset($seo)) {
 
 @section('content')
 <div class="max-w-6xl mx-auto px-4">
-<!-- Hero — sem shapes geométricos -->
-<section class="relative -mx-4 mb-8 overflow-hidden bg-black" style="aspect-ratio:16/4; max-height:45vh;">
+<!-- Hero — gradient bg -->
+<section class="relative bg-gradient-to-br from-brand-900 via-brand-800 to-ink -mx-4 -mt-6 mb-10 overflow-hidden" style="min-height:30vh;">
     @if($label->logo)
-    <img src="{{ img_url($label->logo) }}" alt="{{ $label->name }} logo" width="1920" height="480" class="absolute inset-0 w-full h-full object-cover opacity-25" fetchpriority="high">
+    <img src="{{ img_url($label->logo) }}" alt="{{ $label->name }} logo" width="1920" height="480" class="absolute inset-0 w-full h-full object-cover opacity-15 mix-blend-overlay" fetchpriority="high">
     @endif
-    <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20 flex items-center">
-        <div class="relative z-10 max-w-6xl mx-auto px-4 w-full flex items-center gap-6">
-            @if($label->logo)
-            <img src="{{ img_url($label->logo) }}" alt="{{ $label->name }}" width="80" height="80" class="w-20 h-20 object-contain shrink-0 border-2 border-white/20">
-            @endif
-            <div>
-                <p class="font-display text-xs font-bold tracking-[0.15em] uppercase text-white/40 mb-2">{{ __('common.labels.record_label') }}</p>
-                <h1 class="font-display text-3xl sm:text-5xl font-black text-white leading-none tracking-tight">{{ $label->name }}</h1>
-            </div>
+    <div class="relative z-10 max-w-6xl mx-auto px-4 w-full py-14 sm:py-18 flex items-center gap-6">
+        @if($label->logo)
+        <img src="{{ img_url($label->logo) }}" alt="{{ $label->name }}" width="80" height="80" class="w-20 h-20 object-contain shrink-0">
+        @endif
+        <div>
+            <p class="font-display text-xs font-bold tracking-[0.15em] uppercase text-white/40 mb-2">{{ __('common.labels.record_label') }}</p>
+            <h1 class="font-display text-3xl sm:text-5xl font-black text-white leading-none tracking-tight">{{ $label->name }}</h1>
         </div>
     </div>
 </section>

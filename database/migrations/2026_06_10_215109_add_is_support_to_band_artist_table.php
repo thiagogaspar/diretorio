@@ -9,11 +9,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // MySQL doesn't allow dropping a unique index that's used by a FK.
+        // MySQL/MariaDB doesn't allow dropping a unique index that's used by a FK.
         // Workaround: drop FKs, drop unique, add column, new unique, re-add FKs.
+        // SQLite: skip FK manipulation, just use Schema builder.
+        $isSqlite = DB::getDriverName() === 'sqlite';
 
-        DB::statement('ALTER TABLE band_artist DROP FOREIGN KEY band_artist_artist_id_foreign');
-        DB::statement('ALTER TABLE band_artist DROP FOREIGN KEY band_artist_band_id_foreign');
+        if (! $isSqlite) {
+            DB::statement('ALTER TABLE band_artist DROP FOREIGN KEY band_artist_artist_id_foreign');
+            DB::statement('ALTER TABLE band_artist DROP FOREIGN KEY band_artist_band_id_foreign');
+        }
 
         Schema::table('band_artist', function (Blueprint $table) {
             $table->dropUnique('band_artist_band_id_artist_id_role_unique');
@@ -21,14 +25,20 @@ return new class extends Migration
             $table->unique(['band_id', 'artist_id', 'role', 'is_support'], 'band_artist_band_id_artist_id_role_support_unique');
         });
 
-        DB::statement('ALTER TABLE band_artist ADD CONSTRAINT band_artist_band_id_foreign FOREIGN KEY (band_id) REFERENCES bands(id) ON DELETE CASCADE');
-        DB::statement('ALTER TABLE band_artist ADD CONSTRAINT band_artist_artist_id_foreign FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE');
+        if (! $isSqlite) {
+            DB::statement('ALTER TABLE band_artist ADD CONSTRAINT band_artist_band_id_foreign FOREIGN KEY (band_id) REFERENCES bands(id) ON DELETE CASCADE');
+            DB::statement('ALTER TABLE band_artist ADD CONSTRAINT band_artist_artist_id_foreign FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE');
+        }
     }
 
     public function down(): void
     {
-        DB::statement('ALTER TABLE band_artist DROP FOREIGN KEY band_artist_artist_id_foreign');
-        DB::statement('ALTER TABLE band_artist DROP FOREIGN KEY band_artist_band_id_foreign');
+        $isSqlite = DB::getDriverName() === 'sqlite';
+
+        if (! $isSqlite) {
+            DB::statement('ALTER TABLE band_artist DROP FOREIGN KEY band_artist_artist_id_foreign');
+            DB::statement('ALTER TABLE band_artist DROP FOREIGN KEY band_artist_band_id_foreign');
+        }
 
         Schema::table('band_artist', function (Blueprint $table) {
             $table->dropUnique('band_artist_band_id_artist_id_role_support_unique');
@@ -36,7 +46,9 @@ return new class extends Migration
             $table->unique(['band_id', 'artist_id', 'role'], 'band_artist_band_id_artist_id_role_unique');
         });
 
-        DB::statement('ALTER TABLE band_artist ADD CONSTRAINT band_artist_band_id_foreign FOREIGN KEY (band_id) REFERENCES bands(id) ON DELETE CASCADE');
-        DB::statement('ALTER TABLE band_artist ADD CONSTRAINT band_artist_artist_id_foreign FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE');
+        if (! $isSqlite) {
+            DB::statement('ALTER TABLE band_artist ADD CONSTRAINT band_artist_band_id_foreign FOREIGN KEY (band_id) REFERENCES bands(id) ON DELETE CASCADE');
+            DB::statement('ALTER TABLE band_artist ADD CONSTRAINT band_artist_artist_id_foreign FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE');
+        }
     }
 };

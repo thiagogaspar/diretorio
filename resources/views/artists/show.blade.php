@@ -44,15 +44,20 @@ $seo = new \App\Values\SeoData(
 
 @section('content')
 <div class="max-w-6xl mx-auto px-4">
-<!-- Hero — foto sem shapes -->
-<section class="relative -mx-4 -mt-6 mb-8 overflow-hidden bg-black" style="aspect-ratio:16/4; max-height:45vh;">
+<!-- Hero — gradient bg -->
+<section class="relative bg-gradient-to-br from-accent-900 via-accent-800 to-ink -mx-4 -mt-6 mb-10 overflow-hidden" style="min-height:35vh;">
     @if($heroPlaceholder)
-    <img src="{{ $heroPlaceholder }}" alt="{{ $artist->name }}" width="1920" height="480" class="absolute inset-0 w-full h-full object-cover opacity-30" fetchpriority="high" decoding="sync" sizes="100vw">
+    <img src="{{ $heroPlaceholder }}" alt="{{ $artist->name }}" width="1920" height="480" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" fetchpriority="high" decoding="sync" sizes="100vw">
     @endif
-    <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20"></div>
-    <div class="relative z-10 flex flex-col justify-end h-full">
-        <div class="max-w-6xl mx-auto px-4 w-full pb-8 sm:pb-12 pt-6">
-            <h1 class="font-display text-3xl sm:text-5xl md:text-6xl font-black text-white leading-none tracking-tight">{{ $artist->name }}</h1>
+    <div class="relative z-10 max-w-6xl mx-auto px-4 w-full py-16 sm:py-20">
+        <h1 class="font-display text-3xl sm:text-5xl md:text-6xl font-black text-white leading-none tracking-tight">{{ $artist->name }}</h1>
+        <div class="flex flex-wrap gap-2 mt-4">
+            @if($artist->birth_date)
+            <span class="badge badge-hero">{{ $artist->birth_date->format('Y') }}@if($artist->death_date)&ndash;{{ $artist->death_date->format('Y') }}@endif</span>
+            @endif
+            @if($artist->origin)
+            <span class="badge badge-hero">{{ $artist->origin }}</span>
+            @endif
         </div>
     </div>
 </section>

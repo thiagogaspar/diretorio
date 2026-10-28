@@ -56,7 +56,7 @@ class AlbumResource extends Resource
                             ->columnSpanFull()
                             ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
                         TextInput::make('slug')->required()->unique(ignoreRecord: true),
-                        FileUpload::make('cover_art')->image()->maxSize(5120)->mimeTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('albums')->label('Cover Art'),
+                        FileUpload::make('cover_art')->image()->maxSize(5120)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('albums')->label('Cover Art'),
                         RichEditor::make('description')->columnSpanFull(),
                     ]),
             ]);

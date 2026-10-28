@@ -58,7 +58,7 @@ class PostResource extends Resource
                 Section::make('Publishing')
                     ->columns(2)
                     ->schema([
-                        FileUpload::make('featured_image')->image()->maxSize(5120)->mimeTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('blog'),
+                        FileUpload::make('featured_image')->image()->maxSize(5120)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->directory('blog'),
                         Toggle::make('is_published')->label('Published'),
                     ]),
             ]);
